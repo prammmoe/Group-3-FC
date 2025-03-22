@@ -30,8 +30,7 @@ struct Card:View {
                             .stroke(Color.gray, lineWidth: 1)
                     )
                 }
-                
-                Divider().background(Color.bgGray)
+                Divider().background(ConstantColors.greyBackground)
                 Text("Mario").font(.subheadline).fontWeight(.bold)
             }
             Spacer()
