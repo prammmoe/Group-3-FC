@@ -12,7 +12,7 @@ enum ConstantColors {
     static let blueTint = Color("BlueTint")
     static let greenAmount = Color("GreenAmount")
     static let greyBackground = Color("GreyBackground")
-    static let greyBorder = Color("greyBorder")
+    static let greyBorder = Color("GreyBorder")
     static let grey = Color("GreyGrey")
     static let greyText = Color("GreyText")
     static let greyTextShade = Color("GreyTextShade")

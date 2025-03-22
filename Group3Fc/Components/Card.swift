@@ -15,7 +15,7 @@ struct Card:View {
                     Spacer()
                     Text("06").font(.headline)
                     Spacer()
-                }.padding(.horizontal, 10).background(Color("blueTint")).cornerRadius(6)
+                }.padding(.horizontal, 10).background(ConstantColors.blueTint).cornerRadius(6)
                 VStack(alignment: .leading){
                     Text("Selasa").font(.caption2).foregroundColor(Color.black)
                     Text("Feb\n2025").font(.caption2).foregroundColor(.gray)
