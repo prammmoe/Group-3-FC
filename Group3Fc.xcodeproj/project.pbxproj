@@ -11,16 +11,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		5CBD06B12D8F026C00882A1D /* Module */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Module;
-			sourceTree = "<group>";
-		};
-		5CBD06BC2D8F02F900882A1D /* Design */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Design;
-			sourceTree = "<group>";
-		};
 		9A4D09322D8EC82600C8A591 /* Group3Fc */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Group3Fc;
@@ -44,8 +34,6 @@
 			children = (
 				9A4D09322D8EC82600C8A591 /* Group3Fc */,
 				9A4D09312D8EC82600C8A591 /* Products */,
-				5CBD06B12D8F026C00882A1D /* Module */,
-				5CBD06BC2D8F02F900882A1D /* Design */,
 			);
 			sourceTree = "<group>";
 		};
@@ -73,8 +61,6 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				5CBD06B12D8F026C00882A1D /* Module */,
-				5CBD06BC2D8F02F900882A1D /* Design */,
 				9A4D09322D8EC82600C8A591 /* Group3Fc */,
 			);
 			name = Group3Fc;
