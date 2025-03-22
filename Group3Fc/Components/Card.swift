@@ -11,14 +11,24 @@ struct Card:View {
     var body: some View {
         HStack(){
             HStack(spacing: 8){
-                VStack{
-                    Spacer()
-                    Text("06").font(.headline)
-                    Spacer()
-                }.padding(.horizontal, 10).background(Color("blueTint")).cornerRadius(6)
-                VStack(alignment: .leading){
-                    Text("Selasa").font(.caption2).foregroundColor(Color.black)
-                    Text("Feb\n2025").font(.caption2).foregroundColor(.gray)
+                VStack(spacing: 2){
+                    Text("Selasa").font(.caption2).fontWeight(.bold).foregroundColor(.black)
+                    VStack{
+                        VStack{
+                            Spacer()
+                        }.frame(width: .infinity,height: 8)
+                        VStack{
+                            Spacer()
+                            Text("06").font(.headline)
+                            Spacer()
+                        }.padding(.horizontal, 10).overlay(
+                            Rectangle().stroke(Color.gray, lineWidth: 1),
+                            alignment: .top
+                        )
+                    }.background(Color("blueTint")).cornerRadius(9).overlay(
+                        RoundedRectangle(cornerRadius: 9)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
                 }
                 Divider().background(ConstantColors.greyBackground)
                 Text("Mario").font(.subheadline).fontWeight(.bold)
