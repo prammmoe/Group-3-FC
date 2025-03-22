@@ -57,7 +57,7 @@ struct addHutang: View {
                     }.padding(.horizontal, 16).background(.white).cornerRadius(8)
                     VStack(alignment: .leading){
                         Text("Catatan").font(.subheadline)
-                        TextEditor(text: $catatan).font(.subheadline)
+                        TextEditor(text: $catatan).font(.subheadline).frame(height: 150)
                     }.padding().background(.white).cornerRadius(8)
                 }
             }.padding().frame(maxWidth: .infinity).background(Color("bgGray"))
