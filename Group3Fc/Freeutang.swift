@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct Group3FcApp: App {
+struct Freeutang: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
