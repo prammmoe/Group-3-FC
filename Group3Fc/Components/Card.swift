@@ -20,7 +20,7 @@ struct Card:View {
                     Text("Selasa").font(.caption2).foregroundColor(Color.black)
                     Text("Feb\n2025").font(.caption2).foregroundColor(.gray)
                 }
-                Divider().background(Color.bgGray)
+                Divider().background(ConstantColors.greyBackground)
                 Text("Mario").font(.subheadline).fontWeight(.bold)
             }
             Spacer()
