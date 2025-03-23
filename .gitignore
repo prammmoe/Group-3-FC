@@ -1,0 +1,52 @@
+# 🛠 Xcode
+.DS_Store
+*.xcuserstate
+*.xcworkspace
+*.xcscmblueprint
+*.xccheckout
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcuserstate
+*.swiftpm
+
+# 🏗️ Build artifacts
+DerivedData/
+Build/
+*.app
+*.ipa
+*.dSYM
+*.xcarchive
+
+# 📦 Swift Package Manager (SPM)
+.swiftpm/
+Package.resolved
+
+# 🛠 CocoaPods
+Pods/
+Podfile.lock
+
+# 🚀 Carthage
+Carthage/
+Carthage/Checkouts
+Carthage/Build
+
+# 🖼️ Asset Caching
+*.tiff
+*.png
+*.jpg
+*.jpeg
+
+# 🔧 User Preferences
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.perspective
+*.swp
+
+# 📝 Logs & Temporary Files
+*.log
+*.tmp
+*.swp
+*.lock
+xcuserdata/
+xcdebugger/

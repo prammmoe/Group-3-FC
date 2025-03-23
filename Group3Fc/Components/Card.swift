@@ -17,11 +17,9 @@ struct Card:View {
                         VStack{
                             Spacer()
                         }.frame(width: .infinity,height: 8)
-                        VStack{
-                            Spacer()
+                        VStack{ 
                             Text("06").font(.headline)
-                            Spacer()
-                        }.padding(.horizontal, 10).overlay(
+                        }.padding(.horizontal,8).padding(.vertical, 6).overlay(
                             Rectangle().stroke(Color.gray, lineWidth: 1),
                             alignment: .top
                         )
@@ -37,7 +35,7 @@ struct Card:View {
             HStack(spacing: 12){
                 VStack(alignment: .trailing){
                     Text("Tersisa").font(.caption2).foregroundColor(.gray)
-                    Text("Rp 70.000").font(.body).fontWeight(.bold).foregroundColor(Color("textPrimary"))
+                    Text("Rp 70.000").font(.body).fontWeight(.bold).foregroundColor(Color("Primary"))
                 }
                 Image(systemName: "chevron.right").font(.system(size: 12.5, weight: .bold)).foregroundColor(.gray)
             }
