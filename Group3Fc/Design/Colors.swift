@@ -17,9 +17,10 @@ enum ConstantColors {
     static let greyText = Color("GreyText")
     static let greyTextShade = Color("GreyTextShade")
     static let pickerColorBackgorund = Color("PickerColorBackground")
-    static let Primary = Color("Primary")
+    static let primary = Color("Primary")
     static let redAmount = Color("RedAmount")
     static let secondary = Color("Secondary")
     static let textSecondary = Color("TextSecondary")
     static let white = Color("WhiteWhite")
+    static let greyFormBackground = Color("GreyFormBackground")
 }

@@ -45,7 +45,7 @@ struct Home: View {
                     Button(action: {}){
                         Image(systemName: "clock.arrow.trianglehead.counterclockwise.rotate.90").font(.system(size: 24, weight: .bold)).foregroundColor(.white)
                     }
-                }.padding(.horizontal).padding(.bottom,10).frame(maxWidth: .infinity).background(Color("Primary").ignoresSafeArea())
+                }.padding(.horizontal).padding(.bottom,10).frame(maxWidth: .infinity).background(Color(.primary).ignoresSafeArea())
             }
            
             
