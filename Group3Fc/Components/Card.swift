@@ -11,14 +11,22 @@ struct Card:View {
     var body: some View {
         HStack(){
             HStack(spacing: 8){
-                VStack{
-                    Spacer()
-                    Text("06").font(.headline)
-                    Spacer()
-                }.padding(.horizontal, 10).background(ConstantColors.blueTint).cornerRadius(6)
-                VStack(alignment: .leading){
-                    Text("Selasa").font(.caption2).foregroundColor(Color.black)
-                    Text("Feb\n2025").font(.caption2).foregroundColor(.gray)
+                VStack(spacing: 2){
+                    Text("Selasa").font(.caption2).fontWeight(.bold).foregroundColor(.black)
+                    VStack{
+                        VStack{
+                            Spacer()
+                        }.frame(width: .infinity,height: 8)
+                        VStack{ 
+                            Text("06").font(.headline)
+                        }.padding(.horizontal,8).padding(.vertical, 6).overlay(
+                            Rectangle().stroke(Color.gray, lineWidth: 1),
+                            alignment: .top
+                        )
+                    }.background(Color("blueTint")).cornerRadius(9).overlay(
+                        RoundedRectangle(cornerRadius: 9)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
                 }
                 Divider().background(ConstantColors.greyBackground)
                 Text("Mario").font(.subheadline).fontWeight(.bold)
@@ -27,7 +35,7 @@ struct Card:View {
             HStack(spacing: 12){
                 VStack(alignment: .trailing){
                     Text("Tersisa").font(.caption2).foregroundColor(.gray)
-                    Text("Rp 70.000").font(.body).fontWeight(.bold).foregroundColor(Color("textPrimary"))
+                    Text("Rp 70.000").font(.body).fontWeight(.bold).foregroundColor(Color("Primary"))
                 }
                 Image(systemName: "chevron.right").font(.system(size: 12.5, weight: .bold)).foregroundColor(.gray)
             }

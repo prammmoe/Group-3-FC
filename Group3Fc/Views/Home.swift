@@ -8,47 +8,71 @@
 import SwiftUI
 
 struct Home: View {
+    @State private var showAddHutang:Bool = false
     var body: some View {
         NavigationStack(){
-            ZStack(alignment: .top){
-                ScrollView(){
-                    Spacer().frame(height: 30)
-                    Section{
-                        ZStack{
-                            VStack(){
-                                Spacer()
-                            }.padding().frame(maxWidth: .infinity, maxHeight: .infinity).background(Color("Primary").ignoresSafeArea()).clipShape(.rect(bottomLeadingRadius: 20, bottomTrailingRadius: 20))
-                            HeaderCard()
+            ScrollView(){
+                Spacer().frame(height: 30)
+                Section{
+                    ZStack{
+                        VStack(){
+                            Spacer()
+                        }.padding().frame(maxWidth: .infinity, maxHeight: .infinity).background(Color("Primary").ignoresSafeArea()).clipShape(.rect(bottomLeadingRadius: 20, bottomTrailingRadius: 20))
+                        HeaderCard()
+                    }.frame(maxWidth: .infinity)
+                }.listRowInsets(EdgeInsets())
+                Section{
+                    VStack(spacing: 16){
+                        HStack{
+                            Text("Utang Aktif").font(.callout).fontWeight(.bold)
+                            Spacer()
+                            Text("Maret 2025").font(.callout).fontWeight(.bold).foregroundColor(Color("Primary"))
                         }.frame(maxWidth: .infinity)
-                    }.listRowInsets(EdgeInsets())
-                    Section{
-                        VStack(spacing: 16){
-                            HStack{
-                                Text("Utang Aktif").font(.callout).fontWeight(.bold)
-                                Spacer()
-                            }.frame(maxWidth: .infinity)
-                            VStack(spacing: 12){
-                                Card()
-                                Card()
-                                Card()
-                                Card()
-                                Card()
-                                Card()
-                                Card()
-                            }.frame(maxWidth: .infinity)
-                        }.frame(maxWidth: .infinity).padding()
-                    }.listRowInsets(EdgeInsets())
-                    
-                }.listStyle(.plain).listRowSeparator(.automatic).background(Color("bgGray"))
-                HStack{
-                    Spacer()
-                    Button(action: {}){
-                        Image(systemName: "clock.arrow.trianglehead.counterclockwise.rotate.90").font(.system(size: 24, weight: .bold)).foregroundColor(.white)
-                    }
-                }.padding(.horizontal).padding(.bottom,10).frame(maxWidth: .infinity).background(Color("Primary").ignoresSafeArea())
-            }
+                        VStack(spacing: 12){
+                            Card()
+                            Card()
+                            Card()
+                        }.frame(maxWidth: .infinity)
+                    }.frame(maxWidth: .infinity).padding()
+                }.listRowInsets(EdgeInsets())
+                Section{
+                    VStack(spacing: 16){
+                        HStack{
+                            Text("Utang Aktif").font(.callout).fontWeight(.bold)
+                            Spacer()
+                            Text("Maret 2025").font(.callout).fontWeight(.bold).foregroundColor(Color("Primary"))
+                        }.frame(maxWidth: .infinity)
+                        VStack(spacing: 12){
+                            Card()
+                            Card()
+                            Card()
+                        }.frame(maxWidth: .infinity)
+                    }.frame(maxWidth: .infinity).padding()
+                }.listRowInsets(EdgeInsets())
+                
+            }.listStyle(.plain).listRowSeparator(.automatic).background(Color("bgGray"))
            
             
+        }.toolbar {
+            ToolbarItemGroup(placement: .bottomBar) {
+                HStack{
+                    Button(action: {}){
+                        Image(systemName: "arrow.up.arrow.down.circle").resizable().frame(width: 24, height: 24).foregroundColor(Color("Primary"))
+                    }
+                   
+                    Spacer()
+                    Button(action:{
+                        showAddHutang = true
+                    }){
+                        Image(systemName: "plus.circle").frame(width: 24, height: 24).foregroundColor(Color("Primary"))
+                    }
+
+                }
+
+            }
+        }
+        .sheet(isPresented: $showAddHutang) {
+            addHutang()
         }
     }
 }
@@ -56,6 +80,8 @@ struct Home: View {
 #Preview {
     Home()
 }
+
+
 struct HeaderCard:View {
     var body: some View {
         VStack(alignment: .leading){
