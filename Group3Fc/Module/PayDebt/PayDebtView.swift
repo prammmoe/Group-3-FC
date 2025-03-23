@@ -12,10 +12,10 @@ struct PayDebtView: View {
     
     @State private var debtAmount: Double = 0
     @State private var remainingDebt: Double = 0
-    @State private var isPaymentOverpaid: Bool = false
+    @State private var isPaymentOverpaid: Bool = false // Conditional to check if the payment exceeds the maximum debt amount
     @State private var date: Date = Date()
     
-    let totalDebtAmount: Double = 100000
+    let totalDebtAmount: Double = 100000 // Dummy constant to test the total debt
     
     var body: some View {
         NavigationStack {
@@ -49,15 +49,18 @@ struct PayDebtView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 16))
             }
             .padding()
-        }
-        .navigationTitle("Bayar Utang")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Batal") {
-                    dismiss()
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+//                        Image(systemName: "xmark")
+                        Text("Batal")
+                    }
                 }
             }
         }
+        
     }
     
     private func updateRemainingDebt(paidAmount: Double) {

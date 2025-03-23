@@ -25,7 +25,7 @@ struct Group3FcApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Home()
+            OnboardingView()
         }
         .modelContainer(sharedModelContainer)
     }
