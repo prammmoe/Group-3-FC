@@ -17,7 +17,7 @@ struct addHutang: View {
         NavigationView{
             ScrollView(){
                 VStack(alignment: .leading, spacing: 16){
-                    Text("Tambah Utang").font(.largeTitle).fontWeight(.bold).foregroundColor(Color("textPrimary"))
+                    Text("Tambah Utang").font(.largeTitle).fontWeight(.bold).foregroundColor(Color("Primary"))
                     VStack(){
                         HStack{
                             Text("Nama").font(.subheadline)
@@ -60,13 +60,13 @@ struct addHutang: View {
                         TextEditor(text: $catatan).font(.subheadline).frame(height: 150)
                     }.padding().background(.white).cornerRadius(8)
                 }
-            }.padding().frame(maxWidth: .infinity).background(Color("bgGray"))
+            }.padding().frame(maxWidth: .infinity).background(Color("greyBackground"))
                 .toolbar{
                     ToolbarItemGroup(placement: .topBarLeading){
                         Button(action: {
                             dismiss()
                         }){
-                            Text("Batal").font(.body)
+                            Text("Batal").font(.body).foregroundColor(.black)
                         }
                     }
                     ToolbarItem(placement: .topBarTrailing){
