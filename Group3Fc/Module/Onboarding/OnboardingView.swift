@@ -48,7 +48,7 @@ struct OnboardingView: View {
                 .padding()
             }
             .sheet(isPresented: $presentSheet) {
-                PayDebtView()
+                PayDebtView(modelContext: sharedModelContainer.mainContext)
             }
         }
     }

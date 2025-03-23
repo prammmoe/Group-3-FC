@@ -6,16 +6,24 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct PayDebtView: View {
+    @Environment(\.modelContext) private var modelContext
+    @StateObject var payDebtViewModel: PayDebtViewModel
     @Environment(\.dismiss) private var dismiss
     
-    @State private var debtAmount: Double = 0
+    @State private var paidAmount: Double = 0
     @State private var remainingDebt: Double = 0
     @State private var isPaymentOverpaid: Bool = false // Conditional to check if the payment exceeds the maximum debt amount
     @State private var date: Date = Date()
     
     let totalDebtAmount: Double = 100000 // Dummy constant to test the total debt
+    
+    // Init viewModel
+    init(modelContext: ModelContext) {
+        _payDebtViewModel = StateObject(wrappedValue: PayDebtViewModel(modelContext: modelContext))
+    }
     
     var body: some View {
         NavigationStack {
@@ -24,11 +32,11 @@ struct PayDebtView: View {
                     Text("Jumlah")
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    TextField("Rp", value: $debtAmount, format: .number)
+                    TextField("Rp", value: paidAmount, format: .number)
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.decimalPad)
-                        .onChange(of: debtAmount) { newValue in
-                            updateRemainingDebt(paidAmount: newValue)
+                        .onChange(of: paidAmount) { newValue in
+                            payDebtViewModel.updateRemainingDebt(paidAmount: newValue)
                         }
                 }
                 
@@ -52,7 +60,10 @@ struct PayDebtView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        dismiss()
+                        if paidAmount > 0 {
+                            payDebtViewModel.makeDebtPayment(amount: paidAmount)
+                            dismiss()
+                        }
                     } label: {
 //                        Image(systemName: "xmark")
                         Text("Batal")
@@ -63,12 +74,12 @@ struct PayDebtView: View {
         
     }
     
-    private func updateRemainingDebt(paidAmount: Double) {
-        remainingDebt = max(totalDebtAmount - paidAmount, 0.0)
-        isPaymentOverpaid = paidAmount >= totalDebtAmount
-    }
+//    private func updateRemainingDebt(paidAmount: Double) {
+//        remainingDebt = max(totalDebtAmount - paidAmount, 0.0)
+//        isPaymentOverpaid = paidAmount >= totalDebtAmount
+//    }
 }
 
 #Preview {
-    PayDebtView()
+    PayDebtView(modelContext: sharedModelContainer.mainContext)
 }
