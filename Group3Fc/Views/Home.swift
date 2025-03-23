@@ -66,7 +66,9 @@ struct Home: View {
                     }){
                         Image(systemName: "plus.circle").frame(width: 24, height: 24).foregroundColor(Color("Primary"))
                     }
+
                 }
+
             }
         }
         .sheet(isPresented: $showAddHutang) {
