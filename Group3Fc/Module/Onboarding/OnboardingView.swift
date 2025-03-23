@@ -24,7 +24,7 @@ struct OnboardingView: View {
                     .fontWeight(.bold)
                     .padding()
                     .multilineTextAlignment(.center)
-                    .foregroundStyle(ConstantColors.Primary)
+                    .foregroundStyle(ConstantColors.primary)
                 Text(Strings.onboardingWelcomeBody)
                     .font(.body)
                     .fontWeight(.regular)
@@ -33,7 +33,7 @@ struct OnboardingView: View {
                     .foregroundStyle(.primary)
                 Spacer()
                 NavigationLink {
-                    Home()
+                    HomeView()
                         .navigationBarBackButtonHidden(true) // Hide navigation back button
                 } label: {
                     Text("Lanjutkan")
@@ -42,7 +42,7 @@ struct OnboardingView: View {
                         .foregroundStyle(.white)
                         .padding(.vertical, 20)
                         .frame(maxWidth: .infinity)
-                        .background(ConstantColors.Primary)
+                        .background(ConstantColors.primary)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
                 .padding()

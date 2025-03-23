@@ -32,7 +32,7 @@ struct PayDebtView: View {
                     Text("Jumlah")
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    TextField("Rp", value: paidAmount, format: .number)
+                    TextField("Rp", value: $paidAmount, format: .number)
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.decimalPad)
                         .onChange(of: paidAmount) { newValue in
@@ -53,17 +53,18 @@ struct PayDebtView: View {
                     .foregroundStyle(.white)
                     .padding(.vertical, 20)
                     .frame(maxWidth: .infinity)
-                    .background(ConstantColors.Primary)
+                    .background(ConstantColors.primary)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
             }
             .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        if paidAmount > 0 {
-                            payDebtViewModel.makeDebtPayment(amount: paidAmount)
-                            dismiss()
-                        }
+//                        if paidAmount > 0 {
+//                            payDebtViewModel.makeDebtPayment(amount: paidAmount)
+//                          
+//                        }
+                        dismiss()
                     } label: {
 //                        Image(systemName: "xmark")
                         Text("Batal")
