@@ -32,8 +32,9 @@ struct OnboardingView: View {
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.primary)
                 Spacer()
-                Button {
-                    presentSheet = true
+                NavigationLink {
+                    Home()
+                        .navigationBarBackButtonHidden(true) // Hide navigation back button
                 } label: {
                     Text("Lanjutkan")
                         .font(.headline)
