@@ -9,13 +9,20 @@ import SwiftUI
 import SwiftUI
 
 struct DetailDebtorView: View {
+    @Environment(\.modelContext) private var modelContext
+    @StateObject private var viewModel = DetailDebtorViewModel()
     
-    @StateObject var viewModel = DetailDebtorViewModel()
+    init() {
+        UINavigationBar.appearance().titleTextAttributes = [
+            .foregroundColor: UIColor(resource: .blueShade)
+        ]
+    }
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    HeaderCardDetailDebtor(name: "Mario")
+                    HeaderCardDetailDebtor(name: viewModel.borrower!.name)
                         .padding(.horizontal)
                     
                     Text("Riwayat Bayar")
@@ -25,13 +32,19 @@ struct DetailDebtorView: View {
                         .padding(.horizontal)
                     
                     LazyVStack(spacing: 0) {
-                        ForEach(0..<7, id: \.self) { index in
-                            HistoryPaymentCard(index: index, amount: 1000)
+                        ForEach(Array(viewModel.borrower!.debts.enumerated()), id: \.element.id) { index, debt in
+                            
+                            HistoryPaymentCard(
+                                index: index,
+                                amount: Int(debt.amount),
+                                date: viewModel.formatDate(date: debt.dateCreated),
+                                notes: debt.notes,
+                                lastIndex: (viewModel.borrower!.debts.count - 1)
+                            )
                         }
-                        
                     }.padding(.horizontal)
-                }
-                .padding(.vertical)
+                    
+                }.padding(.vertical)
             }
             .background(ConstantColors.greyFormBackground)
             .navigationTitle("Detail Peminjam")
