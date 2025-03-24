@@ -8,31 +8,41 @@
 import SwiftData
 import Foundation
 
+// TODO: Pikir lagi penamaan variable biar ga membingungkan
+
 @MainActor
 class PayDebtViewModel: ObservableObject {
     private var modelContext: ModelContext
-        
+    
     @Published var borrowers: [Borrower] = []
     @Published var debts: [Debt] = []
-    @Published var totalDebt: Double = 0
+    //    @Published var totalDebt: Double = 0
     @Published var totalPaid: Double = 0
     @Published var remainingDebt: Double = 0
     @Published var isPaymentOverpaid: Bool = false
     
+    // Dummy total debt untuk testing fitur
+    // Asumsi ini dari borrower
+    @Published var totalDebt: Double = 1000000
+    
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
+        self.remainingDebt = totalDebt // Pakai remaining debt untuk menghitung setiap
+        // pengurangan dari total debt
     }
     
     // MARK: Function to check if the amount to be paid > total debt amount
-//    func checkAmountValid(amount: Double) -> Bool {
-//        return amount <= totalDebt
-//    }
+    //    func checkAmountValid(amount: Double) -> Bool {
+    //        return amount <= totalDebt
+    //    }
     
-    // MARK: Function to update remaining debt
+    // MARK: Function untuk validasi pembayaran tanpa mengubah nilai utang
     func updateRemainingDebt(paidAmount: Double) {
-        totalDebt = getTotalDebt()
-        self.remainingDebt = max(totalDebt - paidAmount, 0.0)
-        self.isPaymentOverpaid = paidAmount > totalDebt
+        let potentialRemainingDebt = totalDebt - paidAmount
+        isPaymentOverpaid = paidAmount > totalDebt
+        
+        // Kalkulasi temporary, bukan final value
+        remainingDebt = max(potentialRemainingDebt, 0.0)
     }
     
     // MARK: Function to get total debt amount from one borrower
@@ -41,37 +51,49 @@ class PayDebtViewModel: ObservableObject {
     }
     
     // MARK: Function to pay debt
-    // Positive income (karena bayar utang)
-    func makeDebtPayment(amount: Double, notes: String?) {
-        // kalau mau bayar, harus cek dulu apakah dia langsung lunas atau
-        // engga. kalau engga, nanti dikurangi totalDebt-nya aja terus diupdate
+    /// Positive income (karena bayar utang)
+    /// Di function ini harusnya nanti ga cuma append pembayaran utang saja, tapi update totalUtang yang ada di entity borrower
+    func makeDebtPayment(amount: Double) {
+        // Cek total debt berapa di awal
+        print("Total debt tadinya adalah: \(totalDebt)")
         
-        // Cek apakah amount > 0
-        guard amount > 0 else { return }
+        // Valid condition: amount lebih dari 0 dan amount kurang dari sama dengan total utang
+        guard amount > 0, amount <= totalDebt else {
+            print("Pembayaran tidak valid")
+            return
+        } // masih nested check
+        
         
         // Bikin variable newPayment untuk menyimpan transaksi pembayaran
-        let newPayment = Debt(amount: amount, dateCreated: Date(), notes: notes)
+        let newPayment = Debt(amount: amount, dateCreated: Date())
         
-        // Append transaksi ke payments
+        // Append setiap ada payment baru
         debts.append(newPayment)
+        
+        // Perbarui isi totalDebt setiap ada pembayaran
+        totalDebt -= amount
+        
+        // Perbarui remaining debt ke nilai terakhir dari total debt
+        remainingDebt = totalDebt
+        
+        // TODO: update borrower entity & insert datanya ke borrower entity
+        
+        // Insert payment baru ke database
+        modelContext.insert(newPayment)
+        
+        // Save changes
+        try? modelContext.save()
+        
+        print("Habis payment, sisa utangnya adalah: \(remainingDebt)")
+        
+        // Reset isPaymentOverpaid
+        isPaymentOverpaid = false
+        
     }
     
     // Helper func to get All Debts of one person
     private func getAllDebts() -> [Debt] {
         return borrowers.flatMap { $0.debts }
     }
-    
-    // Helper func to get specific borrower according to specific debt
-    
-    
-//    // Init dummy
-//    init() {
-//        self.debts = [
-//            Debt(name: "John", amount: 1000, date: Date(timeIntervalSinceNow: -3600), notes: "Lunch with team", isPaid: false),
-//            Debt(name: "Jane", amount: 500, date: Date(timeIntervalSinceNow: -7200), notes: "Coffee with team", isPaid: false)
-//        ]
-//    }
-    
-    
 }
 

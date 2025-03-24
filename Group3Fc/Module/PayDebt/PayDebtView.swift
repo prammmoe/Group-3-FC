@@ -4,81 +4,97 @@
 //
 //  Created by Mario Pandapotan Simarmata on 22/03/25.
 //
-
 import SwiftUI
 import SwiftData
 
 struct PayDebtView: View {
     @Environment(\.modelContext) private var modelContext
-    @StateObject var payDebtViewModel: PayDebtViewModel
+    @StateObject private var payDebtViewModel: PayDebtViewModel
+    
     @Environment(\.dismiss) private var dismiss
     
     @State private var paidAmount: Double = 0
-    @State private var remainingDebt: Double = 0
-    @State private var isPaymentOverpaid: Bool = false // Conditional to check if the payment exceeds the maximum debt amount
     @State private var date: Date = Date()
-    
-    let totalDebtAmount: Double = 100000 // Dummy constant to test the total debt
-    
-    // Init viewModel
+        
+    // Init viewModel and navbar color.
     init(modelContext: ModelContext) {
         _payDebtViewModel = StateObject(wrappedValue: PayDebtViewModel(modelContext: modelContext))
+        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor(resource: .blueShade)]
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(resource: .blueShade)]
     }
     
     var body: some View {
         NavigationStack {
             Form {
+                // Menampilkan total utang yang harus dibayar
                 HStack {
-                    Text("Jumlah")
+                    Text("Total Utang")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text("Rp \(payDebtViewModel.totalDebt, specifier: "%.0f")")
+                        .multilineTextAlignment(.trailing)
+                }
+                
+                HStack {
+                    Text("Jumlah Bayar")
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
                     TextField("Rp", value: $paidAmount, format: .number)
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.decimalPad)
                         .onChange(of: paidAmount) { newValue in
+                            // Hanya untuk validasi, bukan mengubah total utang
                             payDebtViewModel.updateRemainingDebt(paidAmount: newValue)
                         }
                 }
                 
-                if !isPaymentOverpaid {
+                // Tampilkan sisa utang setelah pembayaran (untuk preview)
+                HStack {
+                    Text("Sisa Utang")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text("Rp \(payDebtViewModel.remainingDebt, specifier: "%.0f")")
+                        .multilineTextAlignment(.trailing)
+                        .foregroundStyle(payDebtViewModel.isPaymentOverpaid ? .red : .primary)
+                }
+                
+                // Async check if the payment overpaid was true, then hide the datepicker
+                if !payDebtViewModel.isPaymentOverpaid {
                     DatePicker("Tanggal Tagih", selection: $date, displayedComponents: .date)
                         .foregroundStyle(.primary)
+                } else {
+                    Text("Jumlah pembayaran melebihi total utang!")
+                        .foregroundStyle(.red)
                 }
             }
             
-            Button(action: {
-                // TODO: Implementasi logika pembayaran
-            }) {
+            Button {
+                if paidAmount > 0 && !payDebtViewModel.isPaymentOverpaid {
+                    payDebtViewModel.makeDebtPayment(amount: paidAmount)
+                }
+            } label: {
                 Text("Bayar")
                     .foregroundStyle(.white)
-                    .padding(.vertical, 20)
+                    .padding(.vertical, 14)
                     .frame(maxWidth: .infinity)
                     .background(ConstantColors.primary)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
             }
+            // MARK: Disabled case
+            // Kalau amount yang mau dibayar 0 atau amountnya lebih dari total debt maka button-nya akan disabled
+            .disabled(paidAmount <= 0 || payDebtViewModel.isPaymentOverpaid)
             .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-//                        if paidAmount > 0 {
-//                            payDebtViewModel.makeDebtPayment(amount: paidAmount)
-//                          
-//                        }
                         dismiss()
                     } label: {
-//                        Image(systemName: "xmark")
                         Text("Batal")
                     }
                 }
             }
+            .navigationTitle("Bayar Utang")
+            .navigationBarTitleDisplayMode(.large)
         }
-        
     }
-    
-//    private func updateRemainingDebt(paidAmount: Double) {
-//        remainingDebt = max(totalDebtAmount - paidAmount, 0.0)
-//        isPaymentOverpaid = paidAmount >= totalDebtAmount
-//    }
 }
 
 #Preview {

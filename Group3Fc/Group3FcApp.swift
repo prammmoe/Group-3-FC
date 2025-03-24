@@ -13,9 +13,8 @@ struct Group3FcApp: App {
     var body: some Scene {
         WindowGroup {
             OnboardingView()
-            HomeView()
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(for: [Borrower.self, Debt.self]) // Cara lebih bersih
     }
 }
 
