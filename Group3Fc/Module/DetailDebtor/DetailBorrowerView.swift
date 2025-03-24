@@ -64,7 +64,7 @@ struct DetailDebtorView: View {
             }
         }
         .sheet(isPresented: $presentSheet) {
-            PayDebtView(modelContext: modelContext)
+            PayDebtView(modelContext: modelContext, borrower: borrower)
         }
     }
 }

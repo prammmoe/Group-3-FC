@@ -15,24 +15,27 @@ struct PayDebtView: View {
     
     @State private var paidAmount: Double = 0
     @State private var date: Date = Date()
+    
+    var borrower: Borrower
         
     // Init viewModel and navbar color.
-    init(modelContext: ModelContext) {
-        _payDebtViewModel = StateObject(wrappedValue: PayDebtViewModel(modelContext: modelContext))
+    init(modelContext: ModelContext, borrower: Borrower) {
         UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor(resource: .blueShade)]
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(resource: .blueShade)]
+        self.borrower = borrower
+        _payDebtViewModel = StateObject(wrappedValue: PayDebtViewModel(borrower: borrower, modelContext: modelContext))
     }
     
     var body: some View {
         NavigationStack {
             Form {
                 // Menampilkan total utang yang harus dibayar
-                HStack {
-                    Text("Total Utang")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("Rp \(payDebtViewModel.totalDebt, specifier: "%.0f")")
-                        .multilineTextAlignment(.trailing)
-                }
+//                HStack {
+//                    Text("Total Utang")
+//                        .frame(maxWidth: .infinity, alignment: .leading)
+//                    Text("Rp \(payDebtViewModel.getTotalRemainingDebt, specifier: "%.0f")")
+//                        .multilineTextAlignment(.trailing)
+//                }
                 
                 HStack {
                     Text("Jumlah Bayar")
@@ -48,19 +51,19 @@ struct PayDebtView: View {
                 }
                 
                 // Tampilkan sisa utang setelah pembayaran (untuk preview)
-                HStack {
-                    Text("Sisa Utang")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text("Rp \(payDebtViewModel.remainingDebt, specifier: "%.0f")")
-                        .multilineTextAlignment(.trailing)
-                        .foregroundStyle(payDebtViewModel.isPaymentOverpaid ? .red : .primary)
-                }
+//                HStack {
+//                    Text("Sisa Utang")
+//                        .frame(maxWidth: .infinity, alignment: .leading)
+//                    Text("Rp \(payDebtViewModel.remainingDebt, specifier: "%.0f")")
+//                        .multilineTextAlignment(.trailing)
+//                        .foregroundStyle(payDebtViewModel.isPaymentOverpaid ? .red : .primary)
+//                }
                 
-                // Async check if the payment overpaid was true, then hide the datepicker
-                if !payDebtViewModel.isPaymentOverpaid {
+                // Async check if the payment overpaid was true and paid amount equals total debt, then hide the datepicker
+                if !(payDebtViewModel.isPaymentOverpaid || paidAmount == payDebtViewModel.getTotalRemainingDebt) {
                     DatePicker("Tanggal Tagih", selection: $date, displayedComponents: .date)
                         .foregroundStyle(.primary)
-                } else {
+                } else if payDebtViewModel.isPaymentOverpaid {
                     Text("Jumlah pembayaran melebihi total utang!")
                         .foregroundStyle(.red)
                 }
@@ -68,7 +71,8 @@ struct PayDebtView: View {
             
             Button {
                 if paidAmount > 0 && !payDebtViewModel.isPaymentOverpaid {
-                    payDebtViewModel.makeDebtPayment(amount: paidAmount)
+                    payDebtViewModel.makeDebtPayment(borrower: borrower, amount: paidAmount, newDueDate: date)
+                    dismiss()
                 }
             } label: {
                 Text("Bayar")
@@ -97,6 +101,6 @@ struct PayDebtView: View {
     }
 }
 
-#Preview {
-    PayDebtView(modelContext: sharedModelContainer.mainContext)
-}
+//#Preview {
+//    PayDebtView(modelContext: sharedModelContainer.mainContext)
+//}

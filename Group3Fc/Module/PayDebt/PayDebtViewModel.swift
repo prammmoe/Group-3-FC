@@ -9,82 +9,94 @@ import SwiftData
 import Foundation
 
 // TODO: Pikir lagi penamaan variable biar ga membingungkan
-
-@MainActor
 class PayDebtViewModel: ObservableObject {
     private var modelContext: ModelContext
+    @Published var borrower: Borrower?
     
     @Published var borrowers: [Borrower] = []
     @Published var debts: [Debt] = []
     //    @Published var totalDebt: Double = 0
     @Published var totalPaid: Double = 0
+    
+    // Initial state-nya adalah 0
     @Published var remainingDebt: Double = 0
     @Published var isPaymentOverpaid: Bool = false
     
     // Dummy total debt untuk testing fitur
     // Asumsi ini dari borrower
-    @Published var totalDebt: Double = 1000000
+//    @Published var totalDebt: Double = 1000000
     
-    init(modelContext: ModelContext) {
+    init(borrower: Borrower, modelContext: ModelContext) {
         self.modelContext = modelContext
-        self.remainingDebt = totalDebt // Pakai remaining debt untuk menghitung setiap
-        // pengurangan dari total debt
+        
+        // Di sini sudah jadi sesuai total yang ada di DB
+        self.remainingDebt = getTotalRemainingDebt
+        self.borrower = borrower
     }
     
-    // MARK: Function to check if the amount to be paid > total debt amount
-    //    func checkAmountValid(amount: Double) -> Bool {
-    //        return amount <= totalDebt
-    //    }
+    // MARK: Function to get total remaining debt amount
+    var getTotalRemainingDebt: Double {
+        return borrower?.totalDebtAmount ?? 0
+    }
     
     // MARK: Function untuk validasi pembayaran tanpa mengubah nilai utang
     func updateRemainingDebt(paidAmount: Double) {
-        let potentialRemainingDebt = totalDebt - paidAmount
-        isPaymentOverpaid = paidAmount > totalDebt
+        let totalRemainingDebt = getTotalRemainingDebt
+        
+        let potentialRemainingDebt = totalRemainingDebt - paidAmount
+        
+        // Cek apakah nilai pembayaran melebihi total utang
+        isPaymentOverpaid = paidAmount > totalRemainingDebt
         
         // Kalkulasi temporary, bukan final value
         remainingDebt = max(potentialRemainingDebt, 0.0)
     }
     
-    // MARK: Function to get total debt amount from one borrower
-    func getTotalDebt() -> Double {
-        return getAllDebts().reduce(0) { $0 + ($1.amount) }
-    }
     
-    // MARK: Function to pay debt
-    /// Positive income (karena bayar utang)
-    /// Di function ini harusnya nanti ga cuma append pembayaran utang saja, tapi update totalUtang yang ada di entity borrower
-    func makeDebtPayment(amount: Double) {
-        // Cek total debt berapa di awal
-        print("Total debt tadinya adalah: \(totalDebt)")
+    func makeDebtPayment(borrower: Borrower, amount: Double, newDueDate: Date?) {
+        print("Total debt tadinya adalah: \(remainingDebt)")
         
-        // Valid condition: amount lebih dari 0 dan amount kurang dari sama dengan total utang
-        guard amount > 0, amount <= totalDebt else {
+        guard amount > 0 else {
             print("Pembayaran tidak valid")
             return
-        } // masih nested check
+        }
         
+        var paidAmount = amount
         
-        // Bikin variable newPayment untuk menyimpan transaksi pembayaran
-        let newPayment = Debt(amount: amount, dateCreated: Date())
+        // Urutkan utang dari yang paling lama
+        borrower.debts.sort { $0.dateCreated > $1.dateCreated }
         
-        // Append setiap ada payment baru
-        debts.append(newPayment)
+        // Iterasi setiap utang
+        for debt in borrower.debts {
+            if paidAmount <= 0 {
+                break
+            }
+            
+            // Jika utang lebih besar dari yang dibayar, maka kurangi
+            if debt.amount > paidAmount {
+                debt.amount -= paidAmount
+                paidAmount = 0
+            } else {
+                // Jika pembayaran lebih besar, kurangi dan hapus data utang
+                paidAmount -= debt.amount
+                modelContext.delete(debt)
+            }
+        }
         
-        // Perbarui isi totalDebt setiap ada pembayaran
-        totalDebt -= amount
-        
-        // Perbarui remaining debt ke nilai terakhir dari total debt
-        remainingDebt = totalDebt
-        
-        // TODO: update borrower entity & insert datanya ke borrower entity
-        
-        // Insert payment baru ke database
-        modelContext.insert(newPayment)
+        // Perbarui nextDueDate jika ada utang tersisa
+        if let newDueDate = newDueDate {
+            borrower.nextDueDate = newDueDate
+        } else if let nextDebt = borrower.debts.min(by: { $0.dateCreated < $1.dateCreated }) {
+            borrower.nextDueDate = nextDebt.dateCreated
+        } else {
+            borrower.nextDueDate = Date.distantFuture
+        }
         
         // Save changes
         try? modelContext.save()
         
-        print("Habis payment, sisa utangnya adalah: \(remainingDebt)")
+        print("Total debt setelah pembayaran: \(borrower.totalDebtAmount)")
+        print("Tanggal pembayaran selanjutnya: \(borrower.nextDueDate)")
         
         // Reset isPaymentOverpaid
         isPaymentOverpaid = false
