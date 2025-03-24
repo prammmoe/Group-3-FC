@@ -12,15 +12,17 @@ class DetailDebtorViewModel: ObservableObject {
     @Published var borrower: Borrower?
     @Published var debts: [Debt] = []
     var dateFormatter = DateFormatter()
-    
-    init() {
-        debts = [
-            Debt(amount: 200000, dateCreated: Date()),
-            Debt(amount: -300000, dateCreated: Date(),notes: "Bayar Makan"),
-            Debt(amount: -300000, dateCreated: Date(),notes: "Pinjam Duit"),
-        ]
-        borrower = Borrower(id: UUID(), name: "Mario", nextDueDate: Date(), debts: debts)
-    }
+
+     init(borrower: Borrower) {
+         self.borrower = borrower
+         self.fetchDebts()
+     }
+
+     func fetchDebts() {
+         guard let borrower = borrower else { return }
+         self.debts = borrower.debts.sorted { $0.dateCreated > $1.dateCreated } 
+     }
+
     
     func formatToThousandSeparator(_ value: Int) -> String {
         let formatter = NumberFormatter()

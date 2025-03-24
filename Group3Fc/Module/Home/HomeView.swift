@@ -33,7 +33,10 @@ struct HomeView: View {
                         VStack(spacing: 12){
                             ForEach(borrowers){
                                 borrower in
-                                Card(borrower: borrower)
+                                NavigationLink (destination: DetailDebtorView(borrower: borrower)) {
+                                    Card(borrower: borrower)
+                                }
+                             
                             }
                         }.frame(maxWidth: .infinity)
                     }.frame(maxWidth: .infinity).padding()
