@@ -36,24 +36,46 @@ struct DetailDebtorView: View {
                         .foregroundStyle(ConstantColors.black)
                         .padding(.horizontal)
                     
-                    LazyVStack(spacing: 0) {
-                        ForEach(Array(viewModel.borrower!.debts.enumerated()), id: \.element.id) { index, debt in
-                            
-                            HistoryPaymentCard(
-                                index: index,
-                                amount: Int(debt.amount),
-                                date: viewModel.formatDate(date: debt.dateCreated),
-                                notes: debt.notes,
-                                lastIndex: (viewModel.borrower!.debts.count - 1)
-                            )
+                    if (viewModel.borrower!.debts.count == 0) {
+                        VStack (alignment: .center) {
+                            HistoryPaymentCardEmptyState()
                         }
-                    }.padding(.horizontal)
+                        .frame(maxWidth: .infinity).padding()
+                        
+                    }else {
+                        LazyVStack(spacing: 0) {
+                            ForEach(Array(viewModel.borrower!.debts.enumerated()), id: \.element.id) {
+                                index, debt in
+                                
+                                if (viewModel.borrower!.debts.count == 1){
+                                    HistoryPaymentCardOne(
+                                        index: index,
+                                        amount: Int(debt.amount),
+                                        date: viewModel.formatDate(date: debt.dateCreated),
+                                        notes: debt.notes,
+                                        lastIndex: (viewModel.borrower!.debts.count - 1)
+                                    )
+                                }else{
+                                    HistoryPaymentCard(
+                                        index: index,
+                                        amount: Int(debt.amount),
+                                        date: viewModel.formatDate(date: debt.dateCreated),
+                                        notes: debt.notes,
+                                        lastIndex: (viewModel.borrower!.debts.count - 1)
+                                    )
+                                }
+                                
+                            }
+                        }.padding(.horizontal)
+                    }
+                    
                     
                 }.padding(.vertical)
             }
             .background(ConstantColors.greyFormBackground)
             .navigationTitle("Detail Peminjam")
             .navigationBarTitleDisplayMode(.inline)
+            
         }.toolbar {
             ToolbarItem {
                 Button {
@@ -70,9 +92,15 @@ struct DetailDebtorView: View {
 }
 
 #Preview {
-    DetailDebtorView(borrower: Borrower(id: UUID(), name: "Ninja", nextDueDate: Date(), debts: [Debt(amount: 5000, dateCreated: Date(), notes: nil)]))
+    DetailDebtorView(
+        borrower:
+            Borrower(id: UUID(), name: "Ninja", nextDueDate: Date(), debts: [
+                Debt(amount: 5000, dateCreated: Date(), notes: nil),
+                //                Debt(amount: 5000, dateCreated: Date(), notes: nil),
+            ]
+                    )
+    )
 }
-
 
 
 

@@ -1,12 +1,12 @@
 //
-//  HistoryPaymentCardOne.swift
+//  HistoryPaymentCard.swift
 //  Group3Fc
 //
-//  Created by Mario Pandapotan Simarmata on 24/03/25.
+//  Created by Mario Pandapotan Simarmata on 23/03/25.
 //
 import SwiftUI
 
-struct HistoryPaymentCardOne: View {
+struct HistoryPaymentCard: View {
     var index:Int
     var amount: Int
     var date: String
@@ -39,8 +39,8 @@ struct HistoryPaymentCardOne: View {
             .clipShape(
                 CustomCorners(
                     radius: 12,
-                    corners:  [.topLeft, .topRight, .bottomRight, .bottomLeft] 
-                       
+                    corners: index == 0 ? [.topLeft, .topRight] :
+                        index == lastIndex ? [.bottomLeft, .bottomRight] : []
                 )
             )
             .overlay(
