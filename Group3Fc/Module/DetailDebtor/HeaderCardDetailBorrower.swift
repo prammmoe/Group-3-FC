@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HeaderCardDetailDebtor:View {
+    @StateObject var viewModel = DetailDebtorViewModel()
+
     var name: String
     var body: some View {
         
@@ -17,7 +19,8 @@ struct HeaderCardDetailDebtor:View {
                     Text("Total Sisa Utang").foregroundColor(ConstantColors.textSecondary).font(.caption)
                     Text(name).foregroundColor(ConstantColors.textSecondary).font(.caption)
                 }
-                Text("Rp 720.000").foregroundColor(ConstantColors.blueShade).font(.title).fontWeight(.bold)
+                Text("Rp \(Int(viewModel.borrower!.totalDebtAmount < 0 ? viewModel.borrower!.totalDebtAmount * -1 : viewModel.borrower!.totalDebtAmount * 1 ))")
+                    .foregroundColor(ConstantColors.blueShade).font(.title).fontWeight(.bold)
                 HStack{
                     VStack(alignment: .leading){
                         Text("Tagihan terdekat").font(.caption2).foregroundColor(ConstantColors.greyTextShade).multilineTextAlignment(.trailing)

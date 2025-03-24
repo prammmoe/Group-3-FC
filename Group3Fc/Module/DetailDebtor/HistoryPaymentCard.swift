@@ -9,16 +9,29 @@ import SwiftUI
 struct HistoryPaymentCard: View {
     var index:Int
     var amount: Int
+    var date: String
+    var notes: String?
+    var lastIndex: Int
+    
     
     @StateObject var viewModel = DetailDebtorViewModel()
     var body: some View{
         HStack {
             Image(systemName: (amount > 0 ?"arrow.up.circle":"arrow.down.circle"))
-                .font(.system(size: 24)) // Ukuran ikon
+                .font(.system(size: 24))
                 .foregroundStyle(amount > 0 ?ConstantColors.greenAmount: ConstantColors.redAmount)
             
-            Text("15 Maret 2025").font(.subheadline)
+            VStack(alignment: .leading) {
+                Text(date).font(.subheadline)
+                if let notes = notes {
+                    Text(notes)
+                        .font(.footnote)
+                        .foregroundStyle(.greyTextShade)
+                }
+            }
+            
             Spacer()
+            
             Text((amount > 0 ?"+":"-")+" Rp \(viewModel.formatToThousandSeparator(amount))")
                 .font(.subheadline)
                 .foregroundColor(amount > 0 ? ConstantColors.greenAmount:ConstantColors.redAmount)
@@ -30,12 +43,12 @@ struct HistoryPaymentCard: View {
             CustomCorners(
                 radius: 12,
                 corners: index == 0 ? [.topLeft, .topRight] :
-                    index == 9 ? [.bottomLeft, .bottomRight] : []
+                    index == lastIndex ? [.bottomLeft, .bottomRight] : []
             )
         )
         .overlay(
             Rectangle()
-                .frame(height: index == 9 ? 0 : 1) // Hilangkan border bawah di item terakhir
+                .frame(height: index == lastIndex ? 0 : 1)
                 .foregroundColor(.gray.opacity(0.3)),
             alignment: .bottom
         )

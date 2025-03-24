@@ -15,7 +15,7 @@ class Borrower {
     var nextDueDate: Date
     @Relationship(deleteRule: .cascade) var debts: [Debt] = []
     
-    init(id: UUID, name: String, nextDueDate: Date, debts: [Debt]) {
+    init(id: UUID = UUID(), name: String, nextDueDate: Date, debts: [Debt]) {
         self.id = id
         self.name = name
         self.nextDueDate = nextDueDate

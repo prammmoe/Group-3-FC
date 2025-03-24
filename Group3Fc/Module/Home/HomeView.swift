@@ -29,6 +29,9 @@ struct HomeView: View {
                             Text("Maret 2025").font(.callout).fontWeight(.bold).foregroundColor(Color("Primary"))
                         }.frame(maxWidth: .infinity)
                         VStack(spacing: 12){
+                            NavigationLink (destination: DetailDebtorView()){
+                                Card()
+                            }
                             Card()
                             Card()
                             Card()
