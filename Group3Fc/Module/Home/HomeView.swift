@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
-
+import SwiftData
 struct HomeView: View {
+    @Environment(\.modelContext) private var context
+    @Query private var borrowers: [Borrower]
     @State private var showAddHutang:Bool = false
     var body: some View {
         NavigationStack(){
@@ -18,7 +20,7 @@ struct HomeView: View {
                         VStack(){
                             Spacer()
                         }.padding().frame(maxWidth: .infinity, maxHeight: .infinity).background(Color("Primary").ignoresSafeArea()).clipShape(.rect(bottomLeadingRadius: 20, bottomTrailingRadius: 20))
-                        HeaderCard()
+                        HeaderCard(total: getTotalDebtAmount(context: context))
                     }.frame(maxWidth: .infinity)
                 }.listRowInsets(EdgeInsets())
                 Section{
@@ -29,12 +31,10 @@ struct HomeView: View {
                             Text("Maret 2025").font(.callout).fontWeight(.bold).foregroundColor(Color("Primary"))
                         }.frame(maxWidth: .infinity)
                         VStack(spacing: 12){
-                            NavigationLink (destination: DetailDebtorView()){
-                                Card()
+                            ForEach(borrowers){
+                                borrower in
+                                Card(borrower: borrower)
                             }
-                            Card()
-                            Card()
-                            Card()
                         }.frame(maxWidth: .infinity)
                     }.frame(maxWidth: .infinity).padding()
                 }.listRowInsets(EdgeInsets())
@@ -46,9 +46,6 @@ struct HomeView: View {
                             Text("Maret 2025").font(.callout).fontWeight(.bold).foregroundColor(Color("Primary"))
                         }.frame(maxWidth: .infinity)
                         VStack(spacing: 12){
-                            Card()
-                            Card()
-                            Card()
                         }.frame(maxWidth: .infinity)
                     }.frame(maxWidth: .infinity).padding()
                 }.listRowInsets(EdgeInsets())
@@ -73,7 +70,16 @@ struct HomeView: View {
             }
         }
         .sheet(isPresented: $showAddHutang) {
-            addHutang()
+            AddDebtView()
+        }
+    }
+    func getTotalDebtAmount(context: ModelContext) -> Double {
+        do {
+            let allDebts = try context.fetch(FetchDescriptor<Debt>())
+            return allDebts.reduce(0) { $0 + $1.amount }
+        } catch {
+            print("❌ Gagal mengambil data: \(error.localizedDescription)")
+            return 0
         }
     }
 }
@@ -84,6 +90,7 @@ struct HomeView: View {
 
 
 struct HeaderCard:View {
+    @State var total: Double
     var body: some View {
         VStack(alignment: .leading){
             HStack{
@@ -92,7 +99,7 @@ struct HeaderCard:View {
             }
             VStack(alignment: .leading, spacing: 12){
                 Text("Total Sisa Utang").foregroundColor(Color("textSecondary")).font(.caption)
-                Text("Rp 720.000").foregroundColor(Color("BlueShade")).font(.title).fontWeight(.bold)
+                Text(total, format: .currency(code: "IDR")).foregroundColor(Color("BlueShade")).font(.title).fontWeight(.bold)
                 HStack{
                     HStack(spacing:4){
                         Text("Kamu punya").font(.caption).foregroundColor(.primary)
