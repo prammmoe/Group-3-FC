@@ -10,19 +10,24 @@ import SwiftUI
 
 struct DetailDebtorView: View {
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var viewModel = DetailDebtorViewModel()
+    @StateObject private var viewModel: DetailDebtorViewModel
     
-    init() {
+    @State private var presentSheet: Bool = false
+    
+    var borrower: Borrower
+    init(borrower: Borrower) {
         UINavigationBar.appearance().titleTextAttributes = [
             .foregroundColor: UIColor(resource: .blueShade)
         ]
+        self.borrower = borrower
+        _viewModel = StateObject(wrappedValue: DetailDebtorViewModel(borrower: borrower))
     }
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    HeaderCardDetailDebtor(name: viewModel.borrower!.name)
+                    HeaderCardDetailDebtor(name: viewModel.borrower!.name,totalDebtAmount: viewModel.borrower!.totalDebtAmount)
                         .padding(.horizontal)
                     
                     Text("Riwayat Bayar")
@@ -49,12 +54,23 @@ struct DetailDebtorView: View {
             .background(ConstantColors.greyFormBackground)
             .navigationTitle("Detail Peminjam")
             .navigationBarTitleDisplayMode(.inline)
+        }.toolbar {
+            ToolbarItem {
+                Button {
+                    presentSheet = true
+                } label: {
+                    Text("Bayar")
+                }
+            }
+        }
+        .sheet(isPresented: $presentSheet) {
+            PayDebtView(modelContext: modelContext)
         }
     }
 }
 
 #Preview {
-    DetailDebtorView()
+    DetailDebtorView(borrower: Borrower(id: UUID(), name: "Ninja", nextDueDate: Date(), debts: [Debt(amount: 5000, dateCreated: Date(), notes: nil)]))
 }
 
 

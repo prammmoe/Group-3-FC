@@ -14,7 +14,7 @@ struct HistoryPaymentCard: View {
     var lastIndex: Int
     
     
-    @StateObject var viewModel = DetailDebtorViewModel()
+  
     var body: some View{
         HStack {
             Image(systemName: (amount > 0 ?"arrow.up.circle":"arrow.down.circle"))
@@ -32,7 +32,7 @@ struct HistoryPaymentCard: View {
             
             Spacer()
             
-            Text((amount > 0 ?"+":"-")+" Rp \(viewModel.formatToThousandSeparator(amount))")
+            Text((amount > 0 ?"+":"-")+" Rp \(formatToThousandSeparator(amount))")
                 .font(.subheadline)
                 .foregroundColor(amount > 0 ? ConstantColors.greenAmount:ConstantColors.redAmount)
         }
@@ -52,5 +52,12 @@ struct HistoryPaymentCard: View {
                 .foregroundColor(.gray.opacity(0.3)),
             alignment: .bottom
         )
+    }
+    func formatToThousandSeparator(_ value: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.groupingSeparator = "." // Gunakan titik sebagai pemisah ribuan
+        formatter.locale = Locale(identifier: "id_ID") // Menggunakan format Indonesia
+        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 }
