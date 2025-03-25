@@ -15,13 +15,14 @@ struct PayDebtView: View {
     
     @State private var paidAmount: Double = 0
     @State private var date: Date = Date()
+    @State private var showAlert: Bool = false
     
     var borrower: Borrower
         
     // Init viewModel and navbar color.
     init(modelContext: ModelContext, borrower: Borrower) {
-        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor(resource: .blueShade)]
-        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(resource: .blueShade)]
+        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor(resource: .primary)]
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(resource: .primary)]
         self.borrower = borrower
         _payDebtViewModel = StateObject(wrappedValue: PayDebtViewModel(borrower: borrower, modelContext: modelContext))
     }
@@ -33,34 +34,29 @@ struct PayDebtView: View {
                     Text("Jumlah Bayar")
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    TextField("Rp", value: $paidAmount, format: .number)
+                    TextField("Rp", value: $paidAmount, formatter: NumberFormatter())
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.decimalPad)
                         .onChange(of: paidAmount) { newValue in
                             payDebtViewModel.updateRemainingDebt(paidAmount: newValue)
                         }
                 }
-
-                if !(payDebtViewModel.isPaymentOverpaid || paidAmount == payDebtViewModel.getTotalRemainingDebt) {
-                    DatePicker("Tanggal Tagih",
-                               selection: $date,
-                               displayedComponents: .date
-                    ).foregroundStyle(.primary)
-                    
-                } else if payDebtViewModel.isPaymentOverpaid {
-                    Text("Jumlah pembayaran melebihi total utang!")
-                        .foregroundStyle(.red)
+                .padding(.vertical, 16)
+                
+                HStack {
+                    if !(payDebtViewModel.isPaymentOverpaid || paidAmount == payDebtViewModel.getTotalRemainingDebt) {
+                        DatePicker("Tanggal Tagih",
+                                   selection: $date,
+                                   displayedComponents: .date
+                        ).accentColor(.blueShade).tint(.blueShade)
+                    }
                 }
+                .padding(.vertical, 16)
+                
             }
-            
+
             Button {
                 if paidAmount > 0 && !payDebtViewModel.isPaymentOverpaid {
-//                    payDebtViewModel.makeDebtPayment(
-//                        borrower: borrower,
-//                        amount: paidAmount,
-//                        newDueDate: date
-//                    )
-                    
                     payDebtViewModel.payDebt(
                         borrower: borrower,
                         amount: paidAmount,
@@ -69,6 +65,8 @@ struct PayDebtView: View {
                     )
                     
                     dismiss()
+                } else {
+                    showAlert = true
                 }
             } label: {
                 Text("Bayar")
@@ -78,7 +76,9 @@ struct PayDebtView: View {
                     .background(ConstantColors.primary)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
             }
-           .disabled(paidAmount <= 0 || payDebtViewModel.isPaymentOverpaid)
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Jumlah Tidak Valid"), message: Text("Pastikan jumlah tidak kosong dan tidak melebihi jumlah utang"), dismissButton: .default(Text("Oke")))
+            }
             .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

@@ -10,13 +10,27 @@ import SwiftData
 
 @main
 struct Group3FcApp: App {
+    @State private var showOnboarding: Bool = false
+
     var body: some Scene {
         WindowGroup {
-            OnboardingView()
-        }
-        .modelContainer(for: [Borrower.self, Debt.self]) // Cara lebih bersih
+           if showOnboarding {
+               HomeView()
+                   .navigationBarBackButtonHidden(true) // Hide navigation back button
+           } else {
+               OnboardingView().onAppear {
+                   DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                       withAnimation {
+                           self.showOnboarding = true
+                       }
+                   }
+               }
+           }
+       }
+       .modelContainer(for: [Borrower.self, Debt.self])
     }
 }
+
 
 let sharedModelContainer: ModelContainer = {
     do {

@@ -17,39 +17,38 @@ struct OnboardingView: View {
                 Image("LogoOnboarding")
                     .resizable()
                     .frame(width: 100, height: 100)
-                    .padding()
-                Spacer()
                 Text(Strings.onboardingWelcomeTitle)
-                    .font(.title)
+                    .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding()
                     .multilineTextAlignment(.center)
                     .foregroundStyle(ConstantColors.primary)
-                Text(Strings.onboardingWelcomeBody)
-                    .font(.body)
-                    .fontWeight(.regular)
-                    .padding()
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.primary)
-                Spacer()
-                NavigationLink {
-                    HomeView()
-                        .navigationBarBackButtonHidden(true) // Hide navigation back button
-                } label: {
-                    Text("Lanjutkan")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .foregroundStyle(.white)
-                        .padding(.vertical, 20)
-                        .frame(maxWidth: .infinity)
-                        .background(ConstantColors.primary)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                HStack {
+                    Text(Strings.onboardingWelcomeBody)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .padding()
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.primary)
                 }
-                .padding()
+                .frame(width: 300)
+                
+                Spacer()
+//                NavigationLink {
+//                    HomeView()
+//                        .navigationBarBackButtonHidden(true) // Hide navigation back button
+//                } label: {
+//                    Text("Lanjutkan")
+//                        .font(.headline)
+//                        .fontWeight(.bold)
+//                        .foregroundStyle(.white)
+//                        .padding(.vertical, 20)
+//                        .frame(maxWidth: .infinity)
+//                        .background(ConstantColors.primary)
+//                        .clipShape(RoundedRectangle(cornerRadius: 16))
+//                }
+//                .padding()
             }
-//            .sheet(isPresented: $presentSheet) {
-//                PayDebtView(modelContext: sharedModelContainer.mainContext)
-//            }
         }
     }
 }
