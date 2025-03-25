@@ -30,9 +30,10 @@ struct HistoryPaymentCard: View {
             
             Spacer()
             
-            Text((amount > 0 ?"+":"-")+" Rp \(formatToThousandSeparator(amount))")
+            Text((amount > 0 ?"+":"-")+" Rp \(formatToThousandSeparator(amount > 0 ? amount : (-1 * amount)))")
                 .font(.subheadline)
                 .foregroundColor(amount > 0 ? ConstantColors.greenAmount:ConstantColors.redAmount)
+            
         }.frame(height: 60)
             .padding(.horizontal)
             .background(Color.white)

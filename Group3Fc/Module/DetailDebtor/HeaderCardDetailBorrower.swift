@@ -10,6 +10,8 @@ import SwiftUI
 struct HeaderCardDetailDebtor:View {
     var name: String
     var totalDebtAmount: Double
+    var nextDueDate: String
+    
     var body: some View {
         
         VStack(alignment: .leading){
@@ -33,18 +35,18 @@ struct HeaderCardDetailDebtor:View {
                 
                 HStack{
                     VStack(alignment: .leading){
-                        Text("Tagihan terdekat").font(.caption2)
+                        Text("Tagihan").font(.caption2)
                             .foregroundColor(ConstantColors.greyTextShade)
                             .multilineTextAlignment(.trailing)
                             .fontWeight(.regular)
                         
-                        HStack {
+                        HStack (alignment: .bottom){
                             Image(systemName: "calendar.badge.clock")
                                 .foregroundStyle(Color(.secondary))
-                                .font(.footnote)
+                                .font(.subheadline)
                             
-                            Text("Selasa, 26 Feb 2025")
-                                .font(.footnote)
+                            Text(nextDueDate)
+                                .font(.callout)
                                 .multilineTextAlignment(.trailing)
                                 .foregroundColor(ConstantColors.primary)
                                 .fontWeight(.regular)
@@ -62,6 +64,6 @@ struct HeaderCardDetailDebtor:View {
 }
 
 #Preview {
-    HeaderCardDetailDebtor(name: "Mario", totalDebtAmount: 43000)
+    HeaderCardDetailDebtor(name: "Mario", totalDebtAmount: 43000,nextDueDate: "24 Mar 2025")
 }
 

@@ -27,7 +27,11 @@ struct DetailDebtorView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    HeaderCardDetailDebtor(name: viewModel.borrower!.name,totalDebtAmount: viewModel.borrower!.totalDebtAmount)
+                    HeaderCardDetailDebtor(
+                        name: viewModel.borrower!.name,
+                        totalDebtAmount: viewModel.borrower!.totalDebtAmount,
+                        nextDueDate: viewModel.formatDate(date: viewModel.borrower!.nextDueDate)
+                    )
                         .padding(.horizontal)
                     
                     Text("Riwayat Bayar")

@@ -61,6 +61,7 @@ class PayDebtViewModel: ObservableObject {
         let newDebt = Debt(amount: amount, dateCreated: dateCreated, notes: nil)
         borrower.debts.append(newDebt)
         borrower.totalDebtAmount -= amount
+        borrower.nextDueDate = newDueDate!
         
         try? modelContext.save()
     }

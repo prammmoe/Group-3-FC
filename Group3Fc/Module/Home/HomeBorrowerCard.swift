@@ -11,7 +11,7 @@ struct HomeBorrowerCard:View {
     let borrower: Borrower
     var body: some View {
         HStack(){
-            HStack(spacing: 8){
+            HStack(spacing: 16){
                 VStack(spacing: 2){
                     Text(borrower.nextDueDate.formatted(.dateTime.weekday()))
                         .font(.caption2)
@@ -21,11 +21,13 @@ struct HomeBorrowerCard:View {
                     VStack{
                         VStack{
                             Spacer()
-                        }.frame(width: .infinity,height: 8)
+                        }.frame(width: .infinity,height: 6)
                         
                         VStack{
                             Text(borrower.nextDueDate.formatted(.dateTime.day()))
-                                .font(.headline)
+                                .font(.body)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(ConstantColors.black)
                         }.padding(.horizontal,8)
                             .padding(.vertical, 6)
                             .overlay(Rectangle().stroke(
@@ -35,7 +37,7 @@ struct HomeBorrowerCard:View {
                     }.background(ConstantColors.blueTint)
                         .cornerRadius(9)
                         .overlay( RoundedRectangle(
-                            cornerRadius: 9)
+                            cornerRadius: 6)
                             .stroke(Color.gray, lineWidth: 1)
                     )
                     
@@ -76,3 +78,6 @@ struct HomeBorrowerCard:View {
     }
 }
  
+#Preview {
+    HomeBorrowerCard(borrower: Borrower(name: "String", nextDueDate: Date(), debts: []))
+}
