@@ -26,19 +26,4 @@ class Borrower {
     var totalDebtAmount: Double {
         debts.reduce(0) { $0 + ($1.amount) }
     }
-    
-    // Itung total pembayaran yang sudah dilakukan
-//    var totalPaidAmount: Double {
-//        payments.reduce(0) { $0 + $1.amount }
-//    }
-    
-    // Itung sisa utang
-//    var remainingDebtAmount: Double {
-//        totalDebtAmount - totalPaidAmount
-//    }
-    
-    // Apakah utang udah lunas?
-//    var isPaid: Bool {
-//        remainingDebtAmount <= 0
-//    }
 }

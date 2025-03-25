@@ -15,6 +15,8 @@ class Debt {
     var dateCreated: Date
     var notes: String?
     
+    @Relationship(inverse: \Borrower.debts) var borrower: Borrower?
+    
     init(id: UUID = UUID(), amount: Double, dateCreated: Date, notes: String? = nil) {
         self.id = id
         self.amount = amount

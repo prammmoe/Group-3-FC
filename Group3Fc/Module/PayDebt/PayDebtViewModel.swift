@@ -15,23 +15,17 @@ class PayDebtViewModel: ObservableObject {
     
     @Published var borrowers: [Borrower] = []
     @Published var debts: [Debt] = []
-    //    @Published var totalDebt: Double = 0
     @Published var totalPaid: Double = 0
     
     // Initial state-nya adalah 0
     @Published var remainingDebt: Double = 0
     @Published var isPaymentOverpaid: Bool = false
     
-    // Dummy total debt untuk testing fitur
-    // Asumsi ini dari borrower
-//    @Published var totalDebt: Double = 1000000
-    
     init(borrower: Borrower, modelContext: ModelContext) {
+        self.borrower = borrower
         self.modelContext = modelContext
-        
         // Di sini sudah jadi sesuai total yang ada di DB
         self.remainingDebt = getTotalRemainingDebt
-        self.borrower = borrower
     }
     
     // MARK: Function to get total remaining debt amount
@@ -52,55 +46,76 @@ class PayDebtViewModel: ObservableObject {
         remainingDebt = max(potentialRemainingDebt, 0.0)
     }
     
-    
     func makeDebtPayment(borrower: Borrower, amount: Double, newDueDate: Date?) {
-        print("Total debt tadinya adalah: \(remainingDebt)")
+        print("Total debt tadinya adalah: \(borrower.totalDebtAmount)")
         
-        guard amount > 0 else {
+        guard amount > 0, borrower.totalDebtAmount > 0 else {
             print("Pembayaran tidak valid")
             return
         }
         
         var paidAmount = amount
         
-        // Urutkan utang dari yang paling lama
-        borrower.debts.sort { $0.dateCreated > $1.dateCreated }
+        // Urutkan utang dari yang paling lama (tertua)
+        let sortedDebts = borrower.debts.sorted { $0.dateCreated < $1.dateCreated }
         
         // Iterasi setiap utang
-        for debt in borrower.debts {
+        for debt in sortedDebts {
             if paidAmount <= 0 {
                 break
             }
             
-            // Jika utang lebih besar dari yang dibayar, maka kurangi
             if debt.amount > paidAmount {
                 debt.amount -= paidAmount
                 paidAmount = 0
             } else {
-                // Jika pembayaran lebih besar, kurangi dan hapus data utang
                 paidAmount -= debt.amount
                 modelContext.delete(debt)
+                // Langsung hapus dari array untuk menghindari reference yang tidak valid
+                borrower.debts.removeAll { $0.id == debt.id }
             }
         }
         
-        // Perbarui nextDueDate jika ada utang tersisa
-        if let newDueDate = newDueDate {
-            borrower.nextDueDate = newDueDate
-        } else if let nextDebt = borrower.debts.min(by: { $0.dateCreated < $1.dateCreated }) {
-            borrower.nextDueDate = nextDebt.dateCreated
+        // Perbarui remaining debt
+        remainingDebt = borrower.totalDebtAmount
+        
+        // Cek apakah semua utang udah lunas
+        if borrower.debts.isEmpty {
+            print("Semua utang lunas, menghapus borrower: \(borrower.name)")
+            modelContext.delete(borrower)
         } else {
-            borrower.nextDueDate = Date.distantFuture
+            // Update next due date
+            if let newDueDate = newDueDate {
+                borrower.nextDueDate = newDueDate
+            }
         }
         
         // Save changes
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+            print("Perubahan berhasil disimpan")
+        } catch {
+            print("Gagal menyimpan perubahan:", error.localizedDescription)
+        }
         
-        print("Total debt setelah pembayaran: \(borrower.totalDebtAmount)")
-        print("Tanggal pembayaran selanjutnya: \(borrower.nextDueDate)")
-        
-        // Reset isPaymentOverpaid
-        isPaymentOverpaid = false
-        
+        // Debug
+        printStatusAfterPayment()
+    }
+
+    private func printStatusAfterPayment() {
+        print("Daftar borrower setelah pembayaran:")
+        do {
+            let borrowers = try modelContext.fetch(FetchDescriptor<Borrower>())
+            if borrowers.isEmpty {
+                print("- Tidak ada borrower tersisa")
+            } else {
+                for b in borrowers {
+                    print("- \(b.name), Total Utang: \(b.totalDebtAmount), Next Due: \(b.nextDueDate)")
+                }
+            }
+        } catch {
+            print("Gagal mengambil daftar borrower:", error.localizedDescription)
+        }
     }
     
     // Helper func to get All Debts of one person

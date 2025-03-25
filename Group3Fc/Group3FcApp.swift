@@ -18,16 +18,3 @@ struct Group3FcApp: App {
     }
 }
 
-let sharedModelContainer: ModelContainer = {
-    do {
-        let schema = Schema([
-            Borrower.self,
-            Debt.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-        return try ModelContainer(for: schema, configurations: [modelConfiguration])
-    } catch {
-        fatalError("Could not create ModelContainer: \(error)")
-    }
-}()
-
