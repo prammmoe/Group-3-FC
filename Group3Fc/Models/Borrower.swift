@@ -13,6 +13,7 @@ class Borrower {
     @Attribute(.unique) var id: UUID
     @Attribute(.unique) var name: String
     var nextDueDate: Date
+    var totalDebtAmount: Double = 0
     @Relationship(deleteRule: .cascade) var debts: [Debt] = []
     
     init(id: UUID = UUID(), name: String, nextDueDate: Date, debts: [Debt]) {
@@ -21,9 +22,5 @@ class Borrower {
         self.nextDueDate = nextDueDate
         self.debts = debts
     }
-    
-    // Itung total utang dari daftar Debt
-    var totalDebtAmount: Double {
-        debts.reduce(0) { $0 + ($1.amount) }
-    }
+     
 }

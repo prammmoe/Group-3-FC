@@ -8,12 +8,12 @@
 import SwiftUI
 import SwiftData
 struct AddDebtView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
-    @State var name:String = ""
-    @State var amount:Double = 0
-    @State var nextDueDate = Date()
-    @State var dateCreated = Date()
+    @State private var name:String = ""
+    @State private var amount:Double = 0
+    @State private var nextDueDate = Date()
+    @State private var dateCreated = Date()
     @State private var refreshTrigger = false
     @State private var notes:String = ""
     var body: some View {
@@ -85,13 +85,15 @@ struct AddDebtView: View {
         }
         
     }
-    func addBorrower(for name: String, amount: Double, nextDueDate:Date, dateCreated: Date, notes: String,context: ModelContext){
+    
+    private func addBorrower(for name: String, amount: Double, nextDueDate:Date, dateCreated: Date, notes: String,context: ModelContext){
         let fetchData = FetchDescriptor<Borrower>(predicate: #Predicate { $0.name == name })
         do {
             let existingName = try context.fetch(fetchData)
             if let borrower = existingName.first{
-                let newDebt = Debt(amount: amount, dateCreated: dateCreated, notes: notes)
+                let newDebt = Debt(amount: (-amount), dateCreated: dateCreated, notes: notes)
                 borrower.debts.append(newDebt)
+                borrower.totalDebtAmount += amount
                 if nextDueDate < borrower.nextDueDate {
                     borrower.nextDueDate = nextDueDate
                 }
@@ -99,6 +101,7 @@ struct AddDebtView: View {
                 let borrower = Borrower(id: UUID(),name: name, nextDueDate: nextDueDate, debts: [])
                 let newDebt = Debt(amount: amount, dateCreated: dateCreated, notes: notes)
                 borrower.debts.append(newDebt)
+                borrower.totalDebtAmount += amount
                 context.insert(borrower)
             }
             try context.save()
