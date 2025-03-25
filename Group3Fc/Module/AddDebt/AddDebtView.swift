@@ -92,6 +92,7 @@ struct AddDebtView: View {
             if let borrower = existingName.first{
                 let newDebt = Debt(amount: amount, dateCreated: dateCreated, notes: notes)
                 borrower.debts.append(newDebt)
+                borrower.totalDebtAmount += amount
                 if nextDueDate < borrower.nextDueDate {
                     borrower.nextDueDate = nextDueDate
                 }
@@ -99,6 +100,7 @@ struct AddDebtView: View {
                 let borrower = Borrower(id: UUID(),name: name, nextDueDate: nextDueDate, debts: [])
                 let newDebt = Debt(amount: amount, dateCreated: dateCreated, notes: notes)
                 borrower.debts.append(newDebt)
+                borrower.totalDebtAmount += amount
                 context.insert(borrower)
             }
             try context.save()

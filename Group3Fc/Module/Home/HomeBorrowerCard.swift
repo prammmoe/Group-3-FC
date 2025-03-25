@@ -1,13 +1,13 @@
 //
-//  Card.swift
-//  PiutangApp
+//  HomeBorrowerCard.swift
+//  Group3Fc
 //
-//  Created by Filza Rizki Ramadhan on 21/03/25.
+//  Created by Mario Pandapotan Simarmata on 25/03/25.
 //
 
 import SwiftUI
 
-struct Card:View {
+struct HomeBorrowerCard:View {
     let borrower: Borrower
     var body: some View {
         HStack(){
