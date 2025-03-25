@@ -29,14 +29,6 @@ struct PayDebtView: View {
     var body: some View {
         NavigationStack {
             Form {
-                // Menampilkan total utang yang harus dibayar
-//                HStack {
-//                    Text("Total Utang")
-//                        .frame(maxWidth: .infinity, alignment: .leading)
-//                    Text("Rp \(payDebtViewModel.getTotalRemainingDebt, specifier: "%.0f")")
-//                        .multilineTextAlignment(.trailing)
-//                }
-                
                 HStack {
                     Text("Jumlah Bayar")
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -45,24 +37,16 @@ struct PayDebtView: View {
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.decimalPad)
                         .onChange(of: paidAmount) { newValue in
-                            // Hanya untuk validasi, bukan mengubah total utang
                             payDebtViewModel.updateRemainingDebt(paidAmount: newValue)
                         }
                 }
-                
-                // Tampilkan sisa utang setelah pembayaran (untuk preview)
-//                HStack {
-//                    Text("Sisa Utang")
-//                        .frame(maxWidth: .infinity, alignment: .leading)
-//                    Text("Rp \(payDebtViewModel.remainingDebt, specifier: "%.0f")")
-//                        .multilineTextAlignment(.trailing)
-//                        .foregroundStyle(payDebtViewModel.isPaymentOverpaid ? .red : .primary)
-//                }
-                
-                // Async check if the payment overpaid was true and paid amount equals total debt, then hide the datepicker
+
                 if !(payDebtViewModel.isPaymentOverpaid || paidAmount == payDebtViewModel.getTotalRemainingDebt) {
-                    DatePicker("Tanggal Tagih", selection: $date, displayedComponents: .date)
-                        .foregroundStyle(.primary)
+                    DatePicker("Tanggal Tagih",
+                               selection: $date,
+                               displayedComponents: .date
+                    ).foregroundStyle(.primary)
+                    
                 } else if payDebtViewModel.isPaymentOverpaid {
                     Text("Jumlah pembayaran melebihi total utang!")
                         .foregroundStyle(.red)
@@ -71,7 +55,19 @@ struct PayDebtView: View {
             
             Button {
                 if paidAmount > 0 && !payDebtViewModel.isPaymentOverpaid {
-                    payDebtViewModel.makeDebtPayment(borrower: borrower, amount: paidAmount, newDueDate: date)
+//                    payDebtViewModel.makeDebtPayment(
+//                        borrower: borrower,
+//                        amount: paidAmount,
+//                        newDueDate: date
+//                    )
+                    
+                    payDebtViewModel.payDebt(
+                        borrower: borrower,
+                        amount: paidAmount,
+                        newDueDate: date,
+                        dateCreated: Date()
+                    )
+                    
                     dismiss()
                 }
             } label: {
@@ -82,9 +78,7 @@ struct PayDebtView: View {
                     .background(ConstantColors.primary)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
             }
-            // MARK: Disabled case
-            // Kalau amount yang mau dibayar 0 atau amountnya lebih dari total debt maka button-nya akan disabled
-            .disabled(paidAmount <= 0 || payDebtViewModel.isPaymentOverpaid)
+           .disabled(paidAmount <= 0 || payDebtViewModel.isPaymentOverpaid)
             .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -100,7 +94,3 @@ struct PayDebtView: View {
         }
     }
 }
-
-//#Preview {
-//    PayDebtView(modelContext: sharedModelContainer.mainContext)
-//}

@@ -34,7 +34,7 @@ struct HomeView: View {
                                 totalDebt = borrowers.reduce(0) { $0 + $1.totalDebtAmount }
                                 print("Borrowers count onAppear: \(totalDebt)")
                             }
-                           
+                        
                     }.frame(maxWidth: .infinity)
                     
                 }.listRowInsets(EdgeInsets())
@@ -46,16 +46,22 @@ struct HomeView: View {
                             
                             Spacer()
                             
-                            Text("Maret 2025").font(.callout).fontWeight(.bold).foregroundColor(Color("Primary"))
+                            Text("Maret 2025").font(.callout).fontWeight(.bold).foregroundColor(ConstantColors.primary)
                             
                         }.frame(maxWidth: .infinity)
                         VStack(spacing: 12){
-                            ForEach(borrowers){
-                                borrower in
-                                NavigationLink (destination: DetailDebtorView(borrower: borrower)) {
-                                    HomeBorrowerCard(borrower: borrower)
+                            if borrowers.isEmpty {
+                                HistoryPaymentCardEmptyState()
+                            }else{
+                                ForEach(borrowers){
+                                    borrower in
+                                    
+                                    NavigationLink (destination: DetailDebtorView(borrower: borrower)) {
+                                        HomeBorrowerCard(borrower: borrower)
+                                    }
+                                    
                                 }
-                            }
+                        }
                         }.frame(maxWidth: .infinity)
                         
                     }.frame(maxWidth: .infinity)
@@ -89,10 +95,10 @@ struct HomeView: View {
         .sheet(isPresented: $showAddHutang) {
             AddDebtView()
                 .onDisappear() {
-                totalDebt = borrowers.reduce(0) { $0 + $1.totalDebtAmount }
-
-                print("Borrowers count onAppear: \(totalDebt)")
-            }
+                    totalDebt = borrowers.reduce(0) { $0 + $1.totalDebtAmount }
+                    
+                    print("Borrowers count onAppear: \(totalDebt)")
+                }
         }
     }
     

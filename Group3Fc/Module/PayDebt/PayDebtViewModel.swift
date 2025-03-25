@@ -52,6 +52,19 @@ class PayDebtViewModel: ObservableObject {
         remainingDebt = max(potentialRemainingDebt, 0.0)
     }
     
+    func payDebt (borrower: Borrower, amount: Double,newDueDate: Date?, dateCreated: Date ){
+        guard amount > 0 else {
+            print("Pembayaran tidak valid")
+            return
+        }
+        
+        let newDebt = Debt(amount: amount, dateCreated: dateCreated, notes: nil)
+        borrower.debts.append(newDebt)
+        borrower.totalDebtAmount -= amount
+        
+        try? modelContext.save()
+    }
+    
     
     func makeDebtPayment(borrower: Borrower, amount: Double, newDueDate: Date?) {
         print("Total debt tadinya adalah: \(remainingDebt)")

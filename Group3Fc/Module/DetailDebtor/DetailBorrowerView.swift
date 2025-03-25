@@ -44,10 +44,8 @@ struct DetailDebtorView: View {
                         
                     }else {
                         LazyVStack(spacing: 0) {
-                            ForEach(Array(viewModel.borrower!.debts.enumerated()), id: \.element.id) {
-                                index, debt in
-                                
-                                if (viewModel.borrower!.debts.count == 1){
+                            ForEach(Array(viewModel.borrower!.debts.sorted(by: { $0.dateCreated > $1.dateCreated }).enumerated()), id: \.element.id) { index, debt in
+                                if viewModel.borrower!.debts.count == 1 {
                                     HistoryPaymentCardOne(
                                         index: index,
                                         amount: Int(debt.amount),
@@ -55,7 +53,8 @@ struct DetailDebtorView: View {
                                         notes: debt.notes,
                                         lastIndex: (viewModel.borrower!.debts.count - 1)
                                     )
-                                }else{
+                                    
+                                } else {
                                     HistoryPaymentCard(
                                         index: index,
                                         amount: Int(debt.amount),
@@ -66,6 +65,7 @@ struct DetailDebtorView: View {
                                 }
                                 
                             }
+
                         }.padding(.horizontal)
                     }
                     

@@ -21,7 +21,7 @@ struct HistoryPaymentCard: View {
             
             VStack(alignment: .leading) {
                 Text(date).font(.subheadline)
-                if let notes = notes {
+                if let notes = notes, !notes.isEmpty {
                     Text(notes)
                         .font(.footnote)
                         .foregroundStyle(.greyTextShade)

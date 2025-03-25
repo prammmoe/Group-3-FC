@@ -21,7 +21,7 @@ struct HistoryPaymentCardOne: View {
             
             VStack(alignment: .leading) {
                 Text(date).font(.subheadline)
-                if let notes = notes {
+                if let notes = notes, !notes.isEmpty {
                     Text(notes)
                         .font(.footnote)
                         .foregroundStyle(.greyTextShade)
@@ -33,6 +33,7 @@ struct HistoryPaymentCardOne: View {
             Text((amount > 0 ?"+":"-")+" Rp \(formatToThousandSeparator(amount))")
                 .font(.subheadline)
                 .foregroundColor(amount > 0 ? ConstantColors.greenAmount:ConstantColors.redAmount)
+            
         }.frame(height: 60)
             .padding(.horizontal)
             .background(Color.white)
@@ -54,8 +55,8 @@ struct HistoryPaymentCardOne: View {
     func formatToThousandSeparator(_ value: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.groupingSeparator = "." // Gunakan titik sebagai pemisah ribuan
-        formatter.locale = Locale(identifier: "id_ID") // Menggunakan format Indonesia
+        formatter.groupingSeparator = "."
+        formatter.locale = Locale(identifier: "id_ID") 
         return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 }
