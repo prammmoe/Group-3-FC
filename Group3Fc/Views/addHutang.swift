@@ -60,20 +60,22 @@ struct addHutang: View {
                         TextEditor(text: $catatan).font(.subheadline).frame(height: 150)
                     }.padding().background(.white).cornerRadius(8)
                 }
-            }.padding().frame(maxWidth: .infinity).background(Color("greyBackground"))
-                .toolbar{
-                    ToolbarItemGroup(placement: .topBarLeading){
-                        Button(action: {
-                            dismiss()
-                        }){
-                            Text("Batal").font(.body).foregroundColor(.black)
-                        }
-                    }
-                    ToolbarItem(placement: .topBarTrailing){
-                        Text("Simpan").font(.body).foregroundColor(Color("Primary"))
+            }
+            .padding().frame(maxWidth: .infinity).background(Color("greyBackground"))
+            .toolbar{
+                ToolbarItemGroup(placement: .topBarLeading){
+                    Button(action: {
+                        dismiss()
+                    }){
+                        Text("Batal").font(.body).foregroundColor(ConstantColors.white)
                     }
                 }
-        }
+                ToolbarItem(placement: .topBarTrailing){
+                    Text("Simpan").font(.body).foregroundColor(ConstantColors.white)
+                }
+                
+            }
+        }.navigationTitle("Tambah Utang")
         
     }
 }

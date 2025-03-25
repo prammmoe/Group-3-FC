@@ -15,10 +15,7 @@ struct DetailDebtorView: View {
     @State private var presentSheet: Bool = false
     
     var borrower: Borrower
-    init(borrower: Borrower) {
-        UINavigationBar.appearance().titleTextAttributes = [
-            .foregroundColor: UIColor(resource: .blueShade)
-        ]
+    init(borrower: Borrower) { 
         self.borrower = borrower
         _viewModel = StateObject(wrappedValue: DetailDebtorViewModel(borrower: borrower))
     }
@@ -78,14 +75,14 @@ struct DetailDebtorView: View {
             }
             .background(ConstantColors.greyFormBackground)
             .navigationTitle("Detail Peminjam")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.inline) 
             
         }.toolbar {
             ToolbarItem {
                 Button {
                     presentSheet = true
                 } label: {
-                    Text("Bayar")
+                    Text("Bayar").foregroundColor(ConstantColors.white)
                 }
             }
         }

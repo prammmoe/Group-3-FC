@@ -8,80 +8,41 @@
 import SwiftUI
 
 struct HeaderCard:View {
-    @Binding var totalDebt: Double
-    
+    @Binding var totalDebt: Double?
+    @State var tagihanTerdekat: Date?
+    @State var totalUtang: Int
+    var formattedDate: String {
+            guard let date = tagihanTerdekat else { return "Belum ada tagihan" }
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "id_ID")
+            formatter.dateFormat = "EEEE, dd MMM yyyy"
+            return formatter.string(from: date)
+    }
     var body: some View {
         VStack(alignment: .leading){
-            HStack{
-                Text("Dashboard")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(ConstantColors.white)
-                
+            HStack{ 
                 Spacer()
-                
             }
             VStack(alignment: .leading, spacing: 12){
-                Text("Total Sisa Utang")
-                    .foregroundColor(ConstantColors.blueShade)
-                    .font(.caption)
-                
-                Text(totalDebt, format: .currency(code: "IDR"))
-                    .foregroundColor(ConstantColors.blueShade)
-                    .font(.title)
-                    .fontWeight(.bold)
-                
+                Text("Total Sisa Utang").foregroundColor(Color("textSecondary")).font(.caption)
+                Text(abs(totalDebt ?? 0.0), format: .currency(code: "IDR")).foregroundColor(Color("BlueShade")).font(.title).fontWeight(.bold)
                 HStack{
                     HStack(spacing:4){
-                        Text("Kamu punya")
-                            .font(.caption)
-                            .foregroundColor(ConstantColors.primary)
-                        
-                        Text("3")
-                            .font(.caption)
-                            .foregroundColor(ConstantColors.secondary)
-                            .fontWeight(.bold)
-                        
-                        Text("Utang Aktif!")
-                            .font(.caption)
-                            .foregroundColor(ConstantColors.primary)
-                            .fontWeight(.bold)
-                        
-                    }.padding(.horizontal,8)
-                        .padding(.vertical, 4)
-                        .background(ConstantColors.blueTint)
-                        .overlay(RoundedRectangle(
-                            cornerRadius: 8)
+                        Text("Kamu punya").font(.caption).foregroundColor(.primary)
+                        Text("\(totalUtang)").font(.caption).foregroundColor(Color("Secondary")).fontWeight(.bold)
+                        Text("Utang Aktif!").font(.caption).foregroundColor(.primary).fontWeight(.bold)
+                    }.padding(.horizontal,8).padding(.vertical, 4).background(Color("blueTint")).overlay(
+                        RoundedRectangle(cornerRadius: 8)
                             .stroke(Color("Secondary"), lineWidth: 1))
-                    
                     Spacer()
-                    
                     VStack(alignment: .trailing){
-                        Text("Tagihan terdekat")
-                            .font(.caption2)
-                            .foregroundColor(ConstantColors.greyTextShade)
-                            .multilineTextAlignment(.trailing)
-                        
-                        Text("Selasa, 26 Feb 2025")
-                            .font(.footnote)
-                            .multilineTextAlignment(.trailing)
-                            .foregroundColor(ConstantColors.primary)
-                            .fontWeight(.bold)
-                        
+                        Text("Tagihan terdekat").font(.caption2).foregroundColor(.gray).multilineTextAlignment(.trailing)
+                        Text(formattedDate).font(.footnote).multilineTextAlignment(.trailing).foregroundColor(Color("Primary")).fontWeight(.bold)
                     }
                 }
-            }.frame(maxWidth: .infinity)
-                .padding()
-                .background(ConstantColors.white)
-                .cornerRadius(16)
-                .shadow(color: Color.black.opacity(0.4),
-                        radius: 4, x: 0, y: 4
-                )
-            
+            }.frame(maxWidth: .infinity).padding().background(.white).cornerRadius(16).shadow(color: Color.black.opacity(0.4), radius: 4, x: 0, y: 4)
             Spacer().frame(height: 16)
-            
-        }.padding()
-            .frame(maxWidth: .infinity)
+        }.padding().frame(maxWidth: .infinity)
     }
 }
 
