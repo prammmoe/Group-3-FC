@@ -9,8 +9,17 @@ import SwiftUI
 import SwiftData
 struct HomeView: View {
     @Environment(\.modelContext) private var context
-    @Query private var borrowers: [Borrower]
+    @Query(sort: \Borrower.nextDueDate)  var borrowers: [Borrower]
+    
+    @Query(filter: #Predicate<Borrower> { $0.totalDebtAmount > 0 })
+    private var activeBorrowers: [Borrower]
+    @State private var totalDebt:Double? = 0.0
     @State private var showAddHutang:Bool = false
+    @State private var thisWeekMonthYear: String = ""
+    @State private var nextWeekMonthYear: String = ""
+    @State private var thisWeekBorrowers: [Borrower] = []
+    @State private var nextWeekBorrowers: [Borrower] = []
+    @State private var otherBorrowers: [Borrower] = []
     var body: some View {
         NavigationStack(){
             ScrollView(){
@@ -20,49 +29,30 @@ struct HomeView: View {
                         VStack(){
                             Spacer()
                         }.padding().frame(maxWidth: .infinity, maxHeight: .infinity).background(Color("Primary").ignoresSafeArea()).clipShape(.rect(bottomLeadingRadius: 20, bottomTrailingRadius: 20))
-                        HeaderCard(total: getTotalDebtAmount(context: context))
+                        HeaderCardView(totalDebt: $totalDebt, tagihanTerdekat: borrowers.first?.nextDueDate, totalUtang: activeBorrowers.count).onAppear{
+                            totalDebt = activeBorrowers.reduce(0) { $0 + $1.totalDebtAmount }
+                        }
                     }.frame(maxWidth: .infinity)
                 }.listRowInsets(EdgeInsets())
-                Section{
-                    VStack(spacing: 16){
-                        HStack{
-                            Text("Utang Aktif").font(.callout).fontWeight(.bold)
-                            Spacer()
-                            Text("Maret 2025").font(.callout).fontWeight(.bold).foregroundColor(Color("Primary"))
-                        }.frame(maxWidth: .infinity)
-                        VStack(spacing: 12){
-                            ForEach(borrowers){
-                                borrower in
-                                NavigationLink (destination: DetailDebtorView(borrower: borrower)) {
-                                    Card(borrower: borrower)
-                                }
-                             
+                ListCardView(title: "Minggu Ini", month: thisWeekMonthYear, dataBorrower: $thisWeekBorrowers)
+                ListCardView(title: "Minggu Depan",month: nextWeekMonthYear, dataBorrower: $nextWeekBorrowers )
+                ListCardView(title: "Utang Lainnya", month: nil,  dataBorrower: $otherBorrowers)
+            }.onAppear(){
+                if let thisWeek = getMonthYear(forWeekOffset: 0) {
+                                thisWeekMonthYear = thisWeek
                             }
-                        }.frame(maxWidth: .infinity)
-                    }.frame(maxWidth: .infinity).padding()
-                }.listRowInsets(EdgeInsets())
-                Section{
-                    VStack(spacing: 16){
-                        HStack{
-                            Text("Utang Aktif").font(.callout).fontWeight(.bold)
-                            Spacer()
-                            Text("Maret 2025").font(.callout).fontWeight(.bold).foregroundColor(Color("Primary"))
-                        }.frame(maxWidth: .infinity)
-                        VStack(spacing: 12){
-                        }.frame(maxWidth: .infinity)
-                    }.frame(maxWidth: .infinity).padding()
-                }.listRowInsets(EdgeInsets())
-                
-            }.listStyle(.plain).listRowSeparator(.automatic).background(Color("bgGray"))
-           
-            
+                            if let nextWeek = getMonthYear(forWeekOffset: 1) {
+                                nextWeekMonthYear = nextWeek
+                            }
+            groupDataByDate()
+            } .listStyle(.plain).listRowSeparator(.automatic).background(Color("bgGray"))
         }.toolbar {
             ToolbarItemGroup(placement: .bottomBar) {
                 HStack{
                     Button(action: {}){
                         Image(systemName: "arrow.up.arrow.down.circle").resizable().frame(width: 24, height: 24).foregroundColor(Color("Primary"))
                     }
-                   
+                    
                     Spacer()
                     Button(action:{
                         showAddHutang = true
@@ -73,7 +63,10 @@ struct HomeView: View {
             }
         }
         .sheet(isPresented: $showAddHutang) {
-            AddDebtView()
+            AddDebtView().onDisappear(){
+                totalDebt = activeBorrowers.reduce(0) { $0 + $1.totalDebtAmount }
+                groupDataByDate()
+            }
         }
     }
     func getTotalDebtAmount(context: ModelContext) -> Double {
@@ -85,41 +78,46 @@ struct HomeView: View {
             return 0
         }
     }
+    func groupDataByDate(){
+        let calendar = Calendar.current
+        let today = Date()
+         
+        let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: today)!.start
+         
+        let startOfNextWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek)!
+         
+        let startOfFollowingWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfNextWeek)!
+         
+        thisWeekBorrowers = activeBorrowers.filter { borrower in
+            borrower.nextDueDate >= startOfWeek && borrower.nextDueDate < startOfNextWeek
+        }
+        
+        nextWeekBorrowers = activeBorrowers.filter { borrower in
+            borrower.nextDueDate >= startOfNextWeek && borrower.nextDueDate < startOfFollowingWeek
+        }
+        
+        otherBorrowers = activeBorrowers.filter { borrower in
+            borrower.nextDueDate >= startOfFollowingWeek
+        }
+    }
+    func getMonthYear(forWeekOffset weekOffset: Int) -> String? {
+        let calendar = Calendar.current
+        let today = Date()
+        if let targetWeek = calendar.date(byAdding: .weekOfYear, value: weekOffset, to: today),
+           let weekInterval = calendar.dateInterval(of: .weekOfYear, for: targetWeek) {
+            let startOfWeek = weekInterval.start
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMMM yyyy"
+            dateFormatter.locale = Locale(identifier: "id_ID")
+            return dateFormatter.string(from: startOfWeek)
+        }
+        return nil
+    }
 }
 
 #Preview {
     HomeView()
 }
 
-
-struct HeaderCard:View {
-    @State var total: Double
-    var body: some View {
-        VStack(alignment: .leading){
-            HStack{
-                Text("Dashboard").font(.largeTitle).fontWeight(.bold).foregroundColor(.white)
-                Spacer()
-            }
-            VStack(alignment: .leading, spacing: 12){
-                Text("Total Sisa Utang").foregroundColor(Color("textSecondary")).font(.caption)
-                Text(total, format: .currency(code: "IDR")).foregroundColor(Color("BlueShade")).font(.title).fontWeight(.bold)
-                HStack{
-                    HStack(spacing:4){
-                        Text("Kamu punya").font(.caption).foregroundColor(.primary)
-                        Text("3").font(.caption).foregroundColor(Color("Secondary")).fontWeight(.bold)
-                        Text("Utang Aktif!").font(.caption).foregroundColor(.primary).fontWeight(.bold)
-                    }.padding(.horizontal,8).padding(.vertical, 4).background(Color("blueTint")).overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color("Secondary"), lineWidth: 1))
-                    Spacer()
-                    VStack(alignment: .trailing){
-                        Text("Tagihan terdekat").font(.caption2).foregroundColor(.gray).multilineTextAlignment(.trailing)
-                        Text("Selasa, 26 Feb 2025").font(.footnote).multilineTextAlignment(.trailing).foregroundColor(Color("Primary")).fontWeight(.bold)
-                    }
-                }
-            }.frame(maxWidth: .infinity).padding().background(.white).cornerRadius(16).shadow(color: Color.black.opacity(0.4), radius: 4, x: 0, y: 4)
-            Spacer().frame(height: 16)
-        }.padding().frame(maxWidth: .infinity)
-    }
-}
+ 
 
