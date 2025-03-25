@@ -94,6 +94,7 @@ struct AddDebtView: View {
                             
                             DatePicker("",selection: $nextDueDate,displayedComponents: [.date])
                                 .labelsHidden()
+                                .accentColor(.blueShade).tint(.blueShade)
                             
                         }.padding(.vertical, 16)
                         
@@ -107,6 +108,7 @@ struct AddDebtView: View {
                             
                             DatePicker("", selection: $dateCreated,displayedComponents: [.date])
                                 .labelsHidden()
+                                .accentColor(.blueShade).tint(.blueShade)
                             
                         }.padding(.vertical, 16)
                         

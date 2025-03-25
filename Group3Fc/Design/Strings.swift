@@ -8,6 +8,6 @@
 import SwiftUI
 
 enum Strings {
-    static let onboardingWelcomeTitle = "Selamat Datang di Freeutang!"
-    static let onboardingWelcomeBody = "Capek ditagih terus? Atau sering lupa siapa yang belum bayar utang? Catat semua transaksi piutang Anda dengan mudah dengan aplikasi ini!"
+    static let onboardingWelcomeTitle = "Freeutang"
+    static let onboardingWelcomeBody = "Solusi Cerdas untuk Mencatat Piutang Anda"
 }

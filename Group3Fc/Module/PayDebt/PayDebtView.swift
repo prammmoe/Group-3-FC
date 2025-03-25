@@ -21,8 +21,8 @@ struct PayDebtView: View {
         
     // Init viewModel and navbar color.
     init(modelContext: ModelContext, borrower: Borrower) {
-        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor(resource: .blueShade)]
-        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(resource: .blueShade)]
+        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor(resource: .primary)]
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(resource: .primary)]
         self.borrower = borrower
         _payDebtViewModel = StateObject(wrappedValue: PayDebtViewModel(borrower: borrower, modelContext: modelContext))
     }
@@ -34,23 +34,27 @@ struct PayDebtView: View {
                     Text("Jumlah Bayar")
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    TextField("Rp", value: $paidAmount, format: .number)
+                    TextField("Rp", value: $paidAmount, formatter: NumberFormatter())
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.decimalPad)
                         .onChange(of: paidAmount) { newValue in
                             payDebtViewModel.updateRemainingDebt(paidAmount: newValue)
                         }
                 }
-
-                if !(payDebtViewModel.isPaymentOverpaid || paidAmount == payDebtViewModel.getTotalRemainingDebt) {
-                    DatePicker("Tanggal Tagih",
-                               selection: $date,
-                               displayedComponents: .date
-                    ).foregroundStyle(.primary)
-                    
+                .padding(.vertical, 16)
+                
+                HStack {
+                    if !(payDebtViewModel.isPaymentOverpaid || paidAmount == payDebtViewModel.getTotalRemainingDebt) {
+                        DatePicker("Tanggal Tagih",
+                                   selection: $date,
+                                   displayedComponents: .date
+                        ).accentColor(.blueShade).tint(.blueShade)
+                    }
                 }
+                .padding(.vertical, 16)
+                
             }
-            
+
             Button {
                 if paidAmount > 0 && !payDebtViewModel.isPaymentOverpaid {
                     payDebtViewModel.payDebt(
