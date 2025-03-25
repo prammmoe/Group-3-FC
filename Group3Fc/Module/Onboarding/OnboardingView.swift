@@ -47,9 +47,6 @@ struct OnboardingView: View {
                 }
                 .padding()
             }
-//            .sheet(isPresented: $presentSheet) {
-//                PayDebtView(modelContext: sharedModelContainer.mainContext)
-//            }
         }
     }
 }
