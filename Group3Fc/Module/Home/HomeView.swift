@@ -34,10 +34,6 @@ struct HomeView: View {
                                 totalDebt = borrowers.reduce(0) { $0 + $1.totalDebtAmount }
                                 print("Borrowers count onAppear: \(totalDebt)")
                             }
-//                            .onChange(of: borrowers) { newBorrowers in
-//                                totalDebt = newBorrowers.reduce(0) { $0 + $1.totalDebtAmount }
-//                                print("Borrowers updated: \(newBorrowers.count), Total Debt: \(totalDebt)")
-//                            }
                            
                     }.frame(maxWidth: .infinity)
                     
@@ -80,11 +76,13 @@ struct HomeView: View {
                     }
                     
                     Spacer()
+                    
                     Button(action:{
                         showAddHutang = true
                     }){
                         Image(systemName: "plus.circle").frame(width: 24, height: 24).foregroundColor(Color("Primary"))
                     }
+                    
                 }
             }
         }
@@ -97,6 +95,7 @@ struct HomeView: View {
             }
         }
     }
+    
     func getTotalDebtAmount(context: ModelContext) -> Double {
         do {
             let allDebts = try context.fetch(FetchDescriptor<Debt>())
