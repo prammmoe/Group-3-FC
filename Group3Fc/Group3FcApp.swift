@@ -14,18 +14,20 @@ struct Group3FcApp: App {
 
     var body: some Scene {
         WindowGroup {
-           if showOnboarding {
-               HomeView()
-                   .navigationBarBackButtonHidden(true) // Hide navigation back button
-           } else {
-               OnboardingView().onAppear {
-                   DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                       withAnimation {
-                           self.showOnboarding = true
-                       }
-                   }
-               }
-           }
+            NavigationStack {
+                if showOnboarding {
+                    HomeView()
+                        .navigationBarBackButtonHidden(true) // Hide navigation back button
+                } else {
+                    OnboardingView().onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                self.showOnboarding = true
+                            }
+                        }
+                    }
+                }
+            }
        }
        .modelContainer(for: [Borrower.self, Debt.self])
     }

@@ -11,7 +11,8 @@ struct AddDebtView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var context
     @State var name:String = ""
-    @State var amount:Double = 0
+    @State private var amountText: String = ""
+    @State private var amount: Double = 0.0
     @State var nextDueDate = Date()
     @State var dateCreated = Date()
     @State private var refreshTrigger = false
@@ -19,8 +20,9 @@ struct AddDebtView: View {
     @State private var showAlert: Bool = false
     @State private var suggestedBorrowers: [Borrower] = []
     
+    
     var body: some View {
-        NavigationView{
+        NavigationStack{
             ScrollView(){
                 VStack(alignment: .leading, spacing: 16){
                     Text("Tambah Utang")
@@ -76,11 +78,14 @@ struct AddDebtView: View {
                             Spacer()
                             Spacer()
                             
-                            TextField("0", value: $amount, formatter: NumberFormatter())
+                            TextField("Rp.0", text: $amountText)
                                 .keyboardType(.numberPad)
                                 .frame(maxWidth: UIScreen.main.bounds.width * 0.5)
                                 .font(.subheadline)
                                 .multilineTextAlignment(.trailing)
+                                .onChange(of: amountText) { _ in
+                                                    formatCurrencyInput()
+                                }
                             
                         }.padding(.vertical, 16)
                         
@@ -135,7 +140,7 @@ struct AddDebtView: View {
                         Button(action: {
                             dismiss()
                         }){
-                            Text("Batal").font(.body).foregroundColor(.black)
+                            Text("Batal").font(.body).foregroundColor(ConstantColors.white)
                         }
                     }
                     
@@ -160,20 +165,10 @@ struct AddDebtView: View {
                                 .font(.body)
                                 .foregroundColor(ConstantColors.primary)
                         }
-                        .alert(isPresented: $showAlert) {
-                            Alert(title: Text("Jumlah Tidak Valid"), message: Text("Data nama dan jumlah wajib terisi"), dismissButton: .default(Text("Oke")))
-                        }
                     }
                 }
-                .gesture(
-                    TapGesture()
-                        .onEnded {
-                            suggestedBorrowers.removeAll()
-                        }
-                )
         }
     }
-    
     private func findMatchingBorrowers(for name: String, context: ModelContext) -> [Borrower] {
             // Return empty array if name is empty
             guard !name.isEmpty else { return [] }
@@ -191,7 +186,6 @@ struct AddDebtView: View {
                 return []
             }
         }
-    
     func addBorrower(for name: String, amount: Double, nextDueDate:Date, dateCreated: Date, notes: String,context: ModelContext){
         let fetchData = FetchDescriptor<Borrower>(predicate: #Predicate { $0.name == name })
         do {
@@ -218,7 +212,26 @@ struct AddDebtView: View {
         
         
     }
+    private func formatCurrencyInput() {
+        let cleaned = amountText.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
+        
+        if let number = Double(cleaned) {
+            amount = number
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.locale = Locale(identifier: "id_ID")
+            formatter.groupingSeparator = "."
+            
+            if let formatted = formatter.string(from: NSNumber(value: number)) {
+                amountText = "Rp. \(formatted)"
+            }
+        } else {
+            amountText = ""
+            amount = 0.0
+        }
+    }
 }
+
 
 #Preview {
     AddDebtView()

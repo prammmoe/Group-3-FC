@@ -53,7 +53,7 @@ struct PayDebtView: View {
                 }
                 .padding(.vertical, 16)
                 
-            }
+            }.padding(.vertical,8).background(ConstantColors.greyFormBackground)
 
             Button {
                 if paidAmount > 0 && !payDebtViewModel.isPaymentOverpaid {
@@ -85,7 +85,7 @@ struct PayDebtView: View {
                     Button {
                         dismiss()
                     } label: {
-                        Text("Batal")
+                        Text("Batal").foregroundColor(ConstantColors.white)
                     }
                 }
             }

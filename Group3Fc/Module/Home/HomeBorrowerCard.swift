@@ -13,10 +13,12 @@ struct HomeBorrowerCard:View {
         HStack(){
             HStack(spacing: 16){
                 VStack(spacing: 2){
-                    Text(borrower.nextDueDate.formatted(.dateTime.weekday()))
-                        .font(.caption2)
-                        .fontWeight(.bold)
-                        .foregroundColor(ConstantColors.black)
+                    Text(borrower.nextDueDate.formatted(.dateTime.weekday()
+                        .locale(Locale(identifier: "id_ID"))
+                        )
+                    )
+                    .font(.caption2).fontWeight(.bold)
+                    .foregroundColor(ConstantColors.black)
                     
                     VStack{
                         VStack{
