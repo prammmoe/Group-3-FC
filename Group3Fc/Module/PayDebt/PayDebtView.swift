@@ -15,6 +15,7 @@ struct PayDebtView: View {
     
     @State private var paidAmount: Double = 0
     @State private var date: Date = Date()
+    @State private var showAlert: Bool = false
     
     var borrower: Borrower
         
@@ -47,20 +48,11 @@ struct PayDebtView: View {
                                displayedComponents: .date
                     ).foregroundStyle(.primary)
                     
-                } else if payDebtViewModel.isPaymentOverpaid {
-                    Text("Jumlah pembayaran melebihi total utang!")
-                        .foregroundStyle(.red)
                 }
             }
             
             Button {
                 if paidAmount > 0 && !payDebtViewModel.isPaymentOverpaid {
-//                    payDebtViewModel.makeDebtPayment(
-//                        borrower: borrower,
-//                        amount: paidAmount,
-//                        newDueDate: date
-//                    )
-                    
                     payDebtViewModel.payDebt(
                         borrower: borrower,
                         amount: paidAmount,
@@ -69,6 +61,8 @@ struct PayDebtView: View {
                     )
                     
                     dismiss()
+                } else {
+                    showAlert = true
                 }
             } label: {
                 Text("Bayar")
@@ -78,7 +72,9 @@ struct PayDebtView: View {
                     .background(ConstantColors.primary)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
             }
-           .disabled(paidAmount <= 0 || payDebtViewModel.isPaymentOverpaid)
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Jumlah Tidak Valid"), message: Text("Pastikan jumlah tidak kosong dan tidak melebihi jumlah utang"), dismissButton: .default(Text("Oke")))
+            }
             .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
