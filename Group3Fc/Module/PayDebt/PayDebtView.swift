@@ -33,6 +33,7 @@ struct PayDebtView: View {
                 HStack {
                     Text("Jumlah Bayar")
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundStyle(ConstantColors.black)
                     
                     TextField("Rp", value: $paidAmount, formatter: NumberFormatter())
                         .multilineTextAlignment(.trailing)

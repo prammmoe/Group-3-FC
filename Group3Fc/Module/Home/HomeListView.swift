@@ -17,7 +17,7 @@ struct HomeListView: View {
             Section{
                 VStack(spacing: 16){
                     HStack{
-                        Text(title).font(.callout).fontWeight(.bold)
+                        Text(title).font(.callout).fontWeight(.bold).foregroundStyle(ConstantColors.black)
                         Spacer()
                         Text(month ?? "").font(.callout).fontWeight(.bold).foregroundColor(Color("Primary"))
                     }.frame(maxWidth: .infinity)
