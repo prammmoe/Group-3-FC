@@ -58,7 +58,7 @@ struct HomeView: View {
                         )
                         .onAppear{
                             totalDebt = borrowers.reduce(0) { $0 + $1.totalDebtAmount }
-                            nextDueDate = activeBorrowers.sorted { $0.nextDueDate < $1.nextDueDate }.first!.nextDueDate
+                            nextDueDate = activeBorrowers.sorted { $0.nextDueDate < $1.nextDueDate }.first?.nextDueDate
                         }
                         
                     }.frame(maxWidth: .infinity)
@@ -110,7 +110,7 @@ struct HomeView: View {
             AddDebtView()
                 .onDisappear() {
                     totalDebt = borrowers.reduce(0) { $0 + $1.totalDebtAmount }
-                    nextDueDate = activeBorrowers.sorted { $0.nextDueDate < $1.nextDueDate }.first!.nextDueDate
+                    nextDueDate = activeBorrowers.sorted { $0.nextDueDate < $1.nextDueDate }.first?.nextDueDate
                     groupDataByDate()
                 }
         }

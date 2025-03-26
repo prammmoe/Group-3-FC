@@ -29,10 +29,10 @@ struct HeaderCard:View {
                 Text(abs(totalDebt ?? 0.0), format: .currency(code: "IDR")).foregroundColor(Color("BlueShade")).font(.title).fontWeight(.bold)
                 HStack{
                     HStack(spacing:4){
-                        Text("Kamu punya").font(.caption).foregroundColor(.primary)
-                        Text("\(totalUtang)").font(.caption).foregroundColor(Color("Secondary")).fontWeight(.bold)
-                        Text("Utang Aktif!").font(.caption).foregroundColor(.primary).fontWeight(.bold)
-                    }.padding(.horizontal,8).padding(.vertical, 4).background(Color("blueTint")).overlay(
+                        Text("Kamu punya").font(.caption).foregroundColor(ConstantColors.primary)
+                        Text("\(totalUtang)").font(.caption).foregroundColor(ConstantColors.secondary).fontWeight(.bold)
+                        Text("Utang Aktif!").font(.caption).foregroundColor(ConstantColors.primary).fontWeight(.bold)
+                    }.padding(.horizontal,8).padding(.vertical, 4).background(ConstantColors.blueTint).overlay(
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color("Secondary"), lineWidth: 1))
                     Spacer()
