@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct HeaderCard:View {
+//    @Binding var nearestDueDate: String
     @Binding var totalDebt: Double?
-    @State var tagihanTerdekat: Date?
-    @State var totalUtang: Int
+    @Binding var tagihanTerdekat: Date?
+    var totalUtang: Int
     var formattedDate: String {
             guard let date = tagihanTerdekat else { return "Belum ada tagihan" }
             let formatter = DateFormatter()
@@ -24,7 +25,7 @@ struct HeaderCard:View {
                 Spacer()
             }
             VStack(alignment: .leading, spacing: 12){
-                Text("Total Sisa Utang").foregroundColor(Color("textSecondary")).font(.caption)
+                Text("Total Sisa Utang").foregroundColor(ConstantColors.blueShade).font(.caption)
                 Text(abs(totalDebt ?? 0.0), format: .currency(code: "IDR")).foregroundColor(Color("BlueShade")).font(.title).fontWeight(.bold)
                 HStack{
                     HStack(spacing:4){
@@ -37,7 +38,11 @@ struct HeaderCard:View {
                     Spacer()
                     VStack(alignment: .trailing){
                         Text("Tagihan terdekat").font(.caption2).foregroundColor(.gray).multilineTextAlignment(.trailing)
-                        Text(formattedDate).font(.footnote).multilineTextAlignment(.trailing).foregroundColor(Color("Primary")).fontWeight(.bold)
+                        Text(totalDebt! > 0 ? "\(formattedDate)" : "-")
+                            .font(.footnote)
+                            .multilineTextAlignment(.trailing)
+                            .foregroundColor(Color("Primary"))
+                            .fontWeight(.bold)
                     }
                 }
             }.frame(maxWidth: .infinity).padding().background(.white).cornerRadius(16).shadow(color: Color.black.opacity(0.4), radius: 4, x: 0, y: 4)

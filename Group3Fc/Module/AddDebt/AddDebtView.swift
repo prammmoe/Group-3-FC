@@ -163,7 +163,7 @@ struct AddDebtView: View {
                         }){
                             Text("Simpan")
                                 .font(.body)
-                                .foregroundColor(ConstantColors.primary)
+                                .foregroundColor(ConstantColors.white)
                         }
                     }
                 }
@@ -194,14 +194,17 @@ struct AddDebtView: View {
                 let newDebt = Debt(amount: (-amount), dateCreated: dateCreated, notes: notes)
                 borrower.debts.append(newDebt)
                 borrower.totalDebtAmount += amount
-                if nextDueDate < borrower.nextDueDate {
-                    borrower.nextDueDate = nextDueDate
-                }
+                borrower.nextDueDate = nextDueDate
+
+//                if nextDueDate < borrower.nextDueDate {
+//                    borrower.nextDueDate = nextDueDate
+//                }
             }else{
                 let borrower = Borrower(id: UUID(),name: name, nextDueDate: nextDueDate, debts: [])
                 let newDebt = Debt(amount: (-amount), dateCreated: dateCreated, notes: notes)
                 borrower.debts.append(newDebt)
                 borrower.totalDebtAmount += amount
+                borrower.nextDueDate = nextDueDate
                 context.insert(borrower)
             }
             try context.save()

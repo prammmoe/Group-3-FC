@@ -17,18 +17,19 @@ struct HomeView: View {
     
     @State private var totalDebt:Double? = 0.0
     @State private var showAddHutang:Bool = false
+    @State private var nextDueDate: Date?
     @State private var thisWeekMonthYear: String = ""
     @State private var nextWeekMonthYear: String = ""
     @State private var thisWeekBorrowers: [Borrower] = []
     @State private var nextWeekBorrowers: [Borrower] = []
     @State private var otherBorrowers: [Borrower] = []
-
+    
     init() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor(resource: .primary)
         let backItemAppearance = UIBarButtonItemAppearance()
-        backItemAppearance.normal.titleTextAttributes = [.foregroundColor : UIColor.white] 
+        backItemAppearance.normal.titleTextAttributes = [.foregroundColor : UIColor.white]
         appearance.backButtonAppearance = backItemAppearance
         let image = UIImage(systemName: "chevron.backward")?.withTintColor(.white, renderingMode: .alwaysOriginal)
         appearance.setBackIndicatorImage(image, transitionMaskImage: image)
@@ -41,7 +42,7 @@ struct HomeView: View {
     }
     var body: some View {
         NavigationStack(){
-            ScrollView(){ 
+            ScrollView(){
                 Section{
                     ZStack{
                         VStack(){
@@ -52,11 +53,12 @@ struct HomeView: View {
                             .clipShape(.rect(bottomLeadingRadius: 20, bottomTrailingRadius: 20))
                         
                         HeaderCard(totalDebt: $totalDebt,
-                                       tagihanTerdekat: borrowers.first?.nextDueDate,
-                                       totalUtang: activeBorrowers.count
+                                   tagihanTerdekat: $nextDueDate,
+                                   totalUtang: activeBorrowers.count
                         )
                         .onAppear{
-                                totalDebt = borrowers.reduce(0) { $0 + $1.totalDebtAmount }
+                            totalDebt = borrowers.reduce(0) { $0 + $1.totalDebtAmount }
+                            nextDueDate = activeBorrowers.sorted { $0.nextDueDate < $1.nextDueDate }.first!.nextDueDate
                         }
                         
                     }.frame(maxWidth: .infinity)
@@ -90,7 +92,7 @@ struct HomeView: View {
         .navigationTitle("Dashboard")
         .toolbar {
             ToolbarItemGroup(placement: .bottomBar) {
-                HStack{ 
+                HStack{
                     
                     Spacer()
                     
@@ -108,6 +110,7 @@ struct HomeView: View {
             AddDebtView()
                 .onDisappear() {
                     totalDebt = borrowers.reduce(0) { $0 + $1.totalDebtAmount }
+                    nextDueDate = activeBorrowers.sorted { $0.nextDueDate < $1.nextDueDate }.first!.nextDueDate
                     groupDataByDate()
                 }
         }
@@ -125,23 +128,23 @@ struct HomeView: View {
     func groupDataByDate() {
         let calendar = Calendar.current
         let today = Date()
-
+        
         let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: today)!.start
         let startOfNextWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfWeek)!
         let startOfFollowingWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: startOfNextWeek)!
- 
+        
         thisWeekBorrowers = activeBorrowers
             .filter { borrower in
                 borrower.nextDueDate >= startOfWeek && borrower.nextDueDate < startOfNextWeek
             }
             .sorted { $0.nextDueDate < $1.nextDueDate }
-
+        
         nextWeekBorrowers = activeBorrowers
             .filter { borrower in
                 borrower.nextDueDate >= startOfNextWeek && borrower.nextDueDate < startOfFollowingWeek
             }
             .sorted { $0.nextDueDate < $1.nextDueDate }
-
+        
         otherBorrowers = activeBorrowers
             .filter { borrower in
                 borrower.nextDueDate >= startOfFollowingWeek
