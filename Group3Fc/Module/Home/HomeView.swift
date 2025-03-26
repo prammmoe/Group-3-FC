@@ -65,15 +65,21 @@ struct HomeView: View {
                     
                 }.listRowInsets(EdgeInsets())
                 
-                HomeListView(title: "Minggu Ini",
-                             month: thisWeekMonthYear,
-                             dataBorrower: $thisWeekBorrowers)
-                HomeListView(title: "Minggu Depan",
-                             month: nextWeekMonthYear,
-                             dataBorrower: $nextWeekBorrowers )
-                HomeListView(title: "Utang Lainnya",
-                             month: nil,
-                             dataBorrower: $otherBorrowers)
+                if activeBorrowers.isEmpty {
+                    HistoryPaymentCardEmptyState()
+                }else
+                {
+                    
+                    HomeListView(title: "Minggu Ini",
+                                 month: thisWeekMonthYear,
+                                 dataBorrower: $thisWeekBorrowers)
+                    HomeListView(title: "Minggu Depan",
+                                 month: nextWeekMonthYear,
+                                 dataBorrower: $nextWeekBorrowers )
+                    HomeListView(title: "Utang Lainnya",
+                                 month: nil,
+                                 dataBorrower: $otherBorrowers)
+                }
                 
             }.onAppear(){
                 if let thisWeek = getMonthYear(forWeekOffset: 0) {
