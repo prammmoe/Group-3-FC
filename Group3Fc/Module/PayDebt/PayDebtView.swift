@@ -55,7 +55,7 @@ struct PayDebtView: View {
                 .padding(.vertical, 16)
                 
             }.padding(.vertical,8).background(ConstantColors.greyFormBackground)
-
+            
             Button {
                 if paidAmount > 0 && !payDebtViewModel.isPaymentOverpaid {
                     payDebtViewModel.payDebt(
@@ -95,3 +95,11 @@ struct PayDebtView: View {
         }
     }
 }
+#Preview {
+    PayDebtView(
+        modelContext: try! ModelContainer(for: Borrower.self).mainContext,
+        borrower: Borrower(name: "John Doe", nextDueDate: Date(), debts: []
+                          )
+    )
+}
+

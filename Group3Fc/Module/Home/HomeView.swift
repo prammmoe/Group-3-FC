@@ -113,7 +113,7 @@ struct HomeView: View {
             }
         }
         .sheet(isPresented: $showAddHutang) {
-            AddDebtView()
+            AddDebtView2()
                 .onDisappear() {
                     totalDebt = borrowers.reduce(0) { $0 + $1.totalDebtAmount }
                     nextDueDate = activeBorrowers.sorted { $0.nextDueDate < $1.nextDueDate }.first?.nextDueDate
