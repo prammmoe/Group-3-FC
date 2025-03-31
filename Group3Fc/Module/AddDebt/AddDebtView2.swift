@@ -9,26 +9,23 @@ import SwiftUI
 import SwiftData
 
 struct AddDebtView2: View {
-    enum Field: Hashable {
+    private enum Field: Hashable {
         case name, amount, nextDueDate, dateCreated, notes
     }
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) private var context
-    
     @StateObject private var viewModel = AddDebtViewModel()
     @FocusState private var focusedField: Field?
     @State private var refreshTrigger = false
     @State private var showAlert: Bool = false
-    
-    
     
     var body: some View {
         ZStack {
             Color(.systemBackground)
                 .ignoresSafeArea()
                 .onTapGesture {
-                    hideKeyboard() // Fungsi untuk menutup keyboard
+                    hideKeyboard()
                 }
             NavigationStack {
                 List {
@@ -55,8 +52,6 @@ struct AddDebtView2: View {
                                         viewModel.suggestedBorrowers = []
                                     }
                                 }
-                            
-                            
                         }.padding(EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 0))
                             .tint(ConstantColors.blueShade)
                             .frame(height: 44)
@@ -105,7 +100,6 @@ struct AddDebtView2: View {
                     }.tint(ConstantColors.blueShade)
                         .frame(height: 44)
                     
-                    
                     HStack( spacing: 5) {
                         Text("Tanggal Utang")
                             .font(.body)
@@ -116,7 +110,7 @@ struct AddDebtView2: View {
                         HStack (spacing: 8){
                             Image(systemName:  "calendar")
                                 .foregroundStyle(ConstantColors.primary)
-                                .font(.body)
+                                .font(.title3)
                             
                             DatePicker("",selection: $viewModel.dateCreated, displayedComponents: [.date])
                                 .labelsHidden()
@@ -145,7 +139,7 @@ struct AddDebtView2: View {
                         HStack (spacing: 8){
                             Image(systemName: "calendar.badge.clock")
                                 .foregroundStyle(ConstantColors.primary
-                                ).font(.body)
+                                ).font(.title3)
                             
                             DatePicker("",selection: $viewModel.nextDueDate, displayedComponents: [.date])
                                 .labelsHidden()
@@ -159,10 +153,8 @@ struct AddDebtView2: View {
                                 .onSubmit {
                                     focusedField = .notes
                                 }
-                            
                         }
                     }.frame(height: 44)
-                    
                     
                     VStack(alignment: .leading, spacing: 0) {
                         TextField("Catatan",text: $viewModel.notes, axis : .vertical)
@@ -214,8 +206,8 @@ struct AddDebtView2: View {
                                 }
                             }) {
                                 Text(focusedField != nil ? "Selesai" :"Simpan")
-                                .font(.body)
-                                .foregroundColor(.white)
+                                    .font(.body)
+                                    .foregroundColor(.white)
                             }
                         }
                     }

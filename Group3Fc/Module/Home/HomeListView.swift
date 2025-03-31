@@ -17,19 +17,31 @@ struct HomeListView: View {
             Section{
                 VStack(spacing: 16){
                     HStack{
-                        Text(title).font(.callout).fontWeight(.bold).foregroundStyle(ConstantColors.black)
+                        Text(title)
+                            .font(.callout)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(ConstantColors.black)
+                        
                         Spacer()
-                        Text(month ?? "").font(.callout).fontWeight(.bold).foregroundColor(Color("Primary"))
+                        
+                        Text(month ?? "")
+                            .font(.callout)
+                            .fontWeight(.semibold)
+                            .foregroundColor(ConstantColors.primary)
+                        
                     }.frame(maxWidth: .infinity)
+                    
                     VStack(spacing: 12){
                         ForEach(dataBorrower){
                             borrower in
                             NavigationLink (destination: DetailDebtorView(borrower: borrower)) {
-                                HomeBorrowerCard(borrower: borrower)
+                                HomeBorrowerCard2(borrower: borrower)
                             }
                         }
                     }.frame(maxWidth: .infinity)
-                }.frame(maxWidth: .infinity).padding()
+                }.frame(maxWidth: .infinity)
+                    .padding()
+                
             }.listRowInsets(EdgeInsets())
         }
     }

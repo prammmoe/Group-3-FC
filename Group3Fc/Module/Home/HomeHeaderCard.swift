@@ -51,3 +51,6 @@ struct HeaderCard:View {
     }
 }
 
+#Preview {
+    HomeView()
+}

@@ -15,10 +15,10 @@ class AddDebtViewModel: ObservableObject{
     @Published var nextDueDate = Date()
     @Published var dateCreated = Date()
     @Published var notes: String = ""
-
-
+    
+    
     @Published var suggestedBorrowers: [Borrower] = []
-
+    
     
     func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
@@ -29,20 +29,20 @@ class AddDebtViewModel: ObservableObject{
     
     func findMatchingBorrowers(for name: String, context: ModelContext) -> [Borrower] {
         guard !name.isEmpty else { return [] }
-            
-            let fetchData = FetchDescriptor<Borrower>(
-                predicate: #Predicate {
-                    $0.name.localizedStandardContains(name)
-                }
-            )
-            
-            do {
-                return try context.fetch(fetchData)
-            } catch {
-                print("Error fetching data: \(error)")
-                return []
+        
+        let fetchData = FetchDescriptor<Borrower>(
+            predicate: #Predicate {
+                $0.name.localizedStandardContains(name)
             }
+        )
+        
+        do {
+            return try context.fetch(fetchData)
+        } catch {
+            print("Error fetching data: \(error)")
+            return []
         }
+    }
     
     func formatCurrencyInput() {
         let cleaned = amountText.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)

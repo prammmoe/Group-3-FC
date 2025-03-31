@@ -29,7 +29,7 @@ struct DetailDebtorView: View {
                         totalDebtAmount: viewModel.borrower!.totalDebtAmount,
                         nextDueDate: viewModel.formatDate(date: viewModel.borrower!.nextDueDate)
                     )
-                        .padding(.horizontal)
+                    .padding(.horizontal)
                     
                     Text("Riwayat Bayar")
                         .font(.subheadline)
@@ -66,7 +66,7 @@ struct DetailDebtorView: View {
                                 }
                                 
                             }
-
+                            
                         }.padding(.horizontal)
                     }
                     
@@ -80,9 +80,9 @@ struct DetailDebtorView: View {
         }.toolbar {
             ToolbarItem {
                 Button {
-                    presentSheet = true
+                    viewModel.borrower!.totalDebtAmount == 0 ? (presentSheet = false ): (presentSheet = true)
                 } label: {
-                    Text("Bayar").foregroundColor(ConstantColors.white)
+                    Text("Bayar").foregroundColor( viewModel.borrower!.totalDebtAmount == 0 ? ConstantColors.greyText :ConstantColors.white)
                 }
             }
         }

@@ -8,47 +8,39 @@
 import SwiftData
 import Foundation
 
-// TODO: Pikir lagi penamaan variable biar ga membingungkan
 class PayDebtViewModel: ObservableObject {
     private var modelContext: ModelContext
     @Published var borrower: Borrower?
     
     @Published var borrowers: [Borrower] = []
     @Published var debts: [Debt] = []
-    //    @Published var totalDebt: Double = 0
     @Published var totalPaid: Double = 0
     
-    // Initial state-nya adalah 0
     @Published var remainingDebt: Double = 0
     @Published var isPaymentOverpaid: Bool = false
     
-    // Dummy total debt untuk testing fitur
-    // Asumsi ini dari borrower
-//    @Published var totalDebt: Double = 1000000
-    
+    @Published var paidAmountText: String = ""
+    @Published var amount: Double = 0.0
+    @Published var date: Date = Date()
+
+
     init(borrower: Borrower, modelContext: ModelContext) {
         self.modelContext = modelContext
-        
-        // Di sini sudah jadi sesuai total yang ada di DB
         self.remainingDebt = getTotalRemainingDebt
         self.borrower = borrower
     }
     
-    // MARK: Function to get total remaining debt amount
     var getTotalRemainingDebt: Double {
         return borrower?.totalDebtAmount ?? 0
     }
     
-    // MARK: Function untuk validasi pembayaran tanpa mengubah nilai utang
     func updateRemainingDebt(paidAmount: Double) {
         let totalRemainingDebt = getTotalRemainingDebt
         
         let potentialRemainingDebt = totalRemainingDebt - paidAmount
         
-        // Cek apakah nilai pembayaran melebihi total utang
         isPaymentOverpaid = paidAmount > totalRemainingDebt
         
-        // Kalkulasi temporary, bukan final value
         remainingDebt = max(potentialRemainingDebt, 0.0)
     }
     
@@ -58,12 +50,15 @@ class PayDebtViewModel: ObservableObject {
             return
         }
         
-        let newDebt = Debt(amount: amount, dateCreated: dateCreated, notes: nil)
-        borrower.debts.append(newDebt)
-        borrower.totalDebtAmount -= amount
-        borrower.nextDueDate = newDueDate!
-        
-        try? modelContext.save()
+        if borrower.totalDebtAmount > 0 {
+            let newDebt = Debt(amount: amount, dateCreated: dateCreated, notes: nil)
+            borrower.debts.append(newDebt)
+            borrower.totalDebtAmount -= amount
+            borrower.nextDueDate = newDueDate!
+            
+            try? modelContext.save()
+            isPaymentOverpaid = false
+        }
     }
     
     
@@ -77,27 +72,22 @@ class PayDebtViewModel: ObservableObject {
         
         var paidAmount = amount
         
-        // Urutkan utang dari yang paling lama
         borrower.debts.sort { $0.dateCreated > $1.dateCreated }
         
-        // Iterasi setiap utang
         for debt in borrower.debts {
             if paidAmount <= 0 {
                 break
             }
             
-            // Jika utang lebih besar dari yang dibayar, maka kurangi
             if debt.amount > paidAmount {
                 debt.amount -= paidAmount
                 paidAmount = 0
             } else {
-                // Jika pembayaran lebih besar, kurangi dan hapus data utang
                 paidAmount -= debt.amount
                 modelContext.delete(debt)
             }
         }
         
-        // Perbarui nextDueDate jika ada utang tersisa
         if let newDueDate = newDueDate {
             borrower.nextDueDate = newDueDate
         } else if let nextDebt = borrower.debts.min(by: { $0.dateCreated < $1.dateCreated }) {
@@ -106,20 +96,37 @@ class PayDebtViewModel: ObservableObject {
             borrower.nextDueDate = Date.distantFuture
         }
         
-        // Save changes
         try? modelContext.save()
         
         print("Total debt setelah pembayaran: \(borrower.totalDebtAmount)")
         print("Tanggal pembayaran selanjutnya: \(borrower.nextDueDate)")
         
-        // Reset isPaymentOverpaid
         isPaymentOverpaid = false
         
     }
     
-    // Helper func to get All Debts of one person
     private func getAllDebts() -> [Debt] {
         return borrowers.flatMap { $0.debts }
     }
+    
+    func formatCurrencyInput() {
+        let cleaned = paidAmountText.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
+        
+        if let number = Double(cleaned) {
+            amount = number
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.locale = Locale(identifier: "id_ID")
+            formatter.groupingSeparator = "."
+            
+            if let formatted = formatter.string(from: NSNumber(value: number)) {
+                paidAmountText = "Rp. \(formatted)"
+            }
+        } else {
+            paidAmountText = ""
+            amount = 0.0
+        }
+    }
+    
 }
 

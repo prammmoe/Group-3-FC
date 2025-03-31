@@ -8,18 +8,14 @@ import SwiftUI
 import SwiftData
 
 struct PayDebtView: View {
+  
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var payDebtViewModel: PayDebtViewModel
-    
     @Environment(\.dismiss) private var dismiss
-    
-    @State private var paidAmount: Double = 0
-    @State private var date: Date = Date()
+    @StateObject private var payDebtViewModel: PayDebtViewModel
+
     @State private var showAlert: Bool = false
-    
     var borrower: Borrower
-        
-    // Init viewModel and navbar color.
+    
     init(modelContext: ModelContext, borrower: Borrower) {
         UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor(resource: .primary)]
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor(resource: .primary)]
@@ -33,35 +29,51 @@ struct PayDebtView: View {
                 HStack {
                     Text("Jumlah Bayar")
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundStyle(ConstantColors.black)
+                        .foregroundStyle(ConstantColors.blueShade)
                     
-                    TextField("Rp", value: $paidAmount, formatter: NumberFormatter())
+                    TextField("Rp 0", text: $payDebtViewModel.paidAmountText)
+                        .frame(height: 40)
                         .multilineTextAlignment(.trailing)
-                        .keyboardType(.decimalPad)
-                        .onChange(of: paidAmount) { newValue in
-                            payDebtViewModel.updateRemainingDebt(paidAmount: newValue)
+                        .keyboardType(.numberPad)
+                        .onChange(of: payDebtViewModel.paidAmountText) { _ in
+                            payDebtViewModel.formatCurrencyInput()
+                            payDebtViewModel.updateRemainingDebt(paidAmount: payDebtViewModel.amount)
                         }
-                }
-                .padding(.vertical, 16)
+                }.tint(ConstantColors.blueShade)
+                    .frame(height: 44)
                 
-                HStack {
-                    if !(payDebtViewModel.isPaymentOverpaid || paidAmount == payDebtViewModel.getTotalRemainingDebt) {
-                        DatePicker("Tanggal Tagih",
-                                   selection: $date,
-                                   displayedComponents: .date
-                        ).accentColor(.blueShade).tint(.blueShade)
-                    }
+                if !(payDebtViewModel.isPaymentOverpaid || payDebtViewModel.amount == payDebtViewModel.getTotalRemainingDebt) {
+                    HStack (spacing: 8) {
+                        Text("Tanggal Tagih")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .foregroundStyle(ConstantColors.blueShade)
+                        
+                        HStack {
+                            Image(systemName: "calendar.badge.clock")
+                                .foregroundStyle(ConstantColors.primary
+                                ).font(.title3)
+                            
+                            DatePicker("",
+                                       selection: $payDebtViewModel.date,
+                                       displayedComponents: .date
+                            ).accentColor(.blueShade)
+                                .tint(.blueShade)
+                        }
+                        
+                     
+                        
+                    }.padding(.vertical, 16)
+                    
                 }
-                .padding(.vertical, 16)
                 
             }.padding(.vertical,8).background(ConstantColors.greyFormBackground)
             
             Button {
-                if paidAmount > 0 && !payDebtViewModel.isPaymentOverpaid {
+                if payDebtViewModel.amount > 0 && !payDebtViewModel.isPaymentOverpaid {
                     payDebtViewModel.payDebt(
                         borrower: borrower,
-                        amount: paidAmount,
-                        newDueDate: date,
+                        amount: payDebtViewModel.amount,
+                        newDueDate: payDebtViewModel.date,
                         dateCreated: Date()
                     )
                     
@@ -94,6 +106,8 @@ struct PayDebtView: View {
             .navigationBarTitleDisplayMode(.large)
         }
     }
+    
+    
 }
 #Preview {
     PayDebtView(
