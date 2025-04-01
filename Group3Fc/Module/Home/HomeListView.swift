@@ -35,7 +35,7 @@ struct HomeListView: View {
                         ForEach(dataBorrower){
                             borrower in
                             NavigationLink (destination: DetailDebtorView(borrower: borrower)) {
-                                HomeBorrowerCard2(borrower: borrower)
+                                HomeBorrowerCard(borrower: borrower)
                             }
                         }
                     }.frame(maxWidth: .infinity)

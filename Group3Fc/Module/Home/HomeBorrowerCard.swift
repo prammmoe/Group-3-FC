@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeBorrowerCard2: View {
+struct HomeBorrowerCard: View {
     let borrower: Borrower
     
     var body: some View {
@@ -80,5 +80,5 @@ struct HomeBorrowerCard2: View {
 }
 
 #Preview {
-    HomeBorrowerCard2(borrower: Borrower(name: "String", nextDueDate: Date(), debts: []))
+    HomeBorrowerCard(borrower: Borrower(name: "String", nextDueDate: Date(), debts: []))
 }

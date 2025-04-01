@@ -45,7 +45,7 @@ struct HeaderCardDetailDebtor:View {
                                 .foregroundStyle(Color(.secondary))
                                 .font(.subheadline)
                             
-                            Text(nextDueDate)
+                            Text(totalDebtAmount <= 0 ? "-" : nextDueDate)
                                 .font(.callout)
                                 .multilineTextAlignment(.trailing)
                                 .foregroundColor(ConstantColors.primary)

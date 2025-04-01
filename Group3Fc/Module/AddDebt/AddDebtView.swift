@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct AddDebtView2: View {
+struct AddDebtView: View {
     private enum Field: Hashable {
         case name, amount, nextDueDate, dateCreated, notes
     }
@@ -223,5 +223,5 @@ extension View {
 }
 
 #Preview {
-    AddDebtView2()
+    AddDebtView()
 }
