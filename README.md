@@ -8,18 +8,9 @@ FreeUtang is a simple receivables tracking application built in iOS, designed to
 * Grouping Debts by nearest due date
 
 ## UI
-<img src="UI Screenshots/Home 1.PNG" width=180> 
-<img src="UI Screenshots/Home 2.PNG" width=180> 
-<img src="UI Screenshots/Add Debt 1.PNG" width=180> 
-<img src="UI Screenshots/Add Debt 2.PNG" width=180> 
-<img src="UI Screenshots/Home After Add Debt.PNG" width=180> 
-<img src="UI Screenshots/Detail Debt Before Pay.PNG" width=180> 
-<img src="UI Screenshots/Pay Debt Installment.PNG" width=180> 
-<img src="UI Screenshots/Pay Debt Full.PNG" width=180> 
-<img src="UI Screenshots/Home After Pay Debt.PNG" width=180> 
-<img src="UI Screenshots/Detail Debt Before Pay Installment.PNG" width=180> 
-<img src="UI Screenshots/Pay Debt with Installment.PNG" width=180> 
-<img src="UI Screenshots/Home After Pay Debt Installment.PNG" width=180> 
+<img src="UI Screenshots/Home 1.PNG" width=180> <img src="UI Screenshots/Home 2.PNG" width=180> <img src="UI Screenshots/Add Debt 1.PNG" width=180> <img src="UI Screenshots/Add Debt 2.PNG" width=180> 
+<img src="UI Screenshots/Home After Add Debt.PNG" width=180> <img src="UI Screenshots/Detail Debt Before Pay.PNG" width=180> <img src="UI Screenshots/Pay Debt Installment.PNG" width=180> <img src="UI Screenshots/Pay Debt Full.PNG" width=180> <img src="UI Screenshots/Home After Pay Debt.PNG" width=180> 
+<img src="UI Screenshots/Detail Debt Before Pay Installment.PNG" width=180> <img src="UI Screenshots/Pay Debt with Installment.PNG" width=180> <img src="UI Screenshots/Home After Pay Debt Installment.PNG" width=180> 
 
 
 ## Contributor
