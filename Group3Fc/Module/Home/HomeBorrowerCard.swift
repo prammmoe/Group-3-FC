@@ -1,58 +1,55 @@
 //
-//  HomeBorrowerCard.swift
+//  HomeBorrowerCard2.swift
 //  Group3Fc
 //
-//  Created by Mario Pandapotan Simarmata on 25/03/25.
+//  Created by Mario Pandapotan Simarmata on 31/03/25.
 //
 
 import SwiftUI
 
-struct HomeBorrowerCard:View {
+struct HomeBorrowerCard2: View {
     let borrower: Borrower
+    
     var body: some View {
-        HStack(){
-            HStack(spacing: 16){
+        HStack {
+            HStack (spacing: 16){
                 VStack(spacing: 2){
                     Text(borrower.nextDueDate.formatted(.dateTime.weekday()
                         .locale(Locale(identifier: "id_ID"))
-                        )
-                    )
-                    .font(.caption2).fontWeight(.bold)
-                    .foregroundColor(ConstantColors.black)
+                        )).font(.caption2)
+                        .foregroundStyle(ConstantColors.black)
                     
-                    VStack{
-                        VStack{
+                    VStack (spacing: 0){
+                        HStack { Spacer()
+                            Circle().frame(width: 4,height: 4)
                             Spacer()
-                        }.frame(width: .infinity,height: 6)
+                            Circle().frame(width: 4,height: 4)
+                            Spacer()
+                        }.frame(width:45, height: 10)
+                            .foregroundStyle(ConstantColors.white)
+                            .background(ConstantColors.primary)
                         
-                        VStack{
+                        HStack {
                             Text(borrower.nextDueDate.formatted(.dateTime.day()))
-                                .font(.body)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(ConstantColors.black)
-                        }.padding(.horizontal,8)
-                            .padding(.vertical, 6)
-                            .overlay(Rectangle().stroke(
-                                Color.gray, lineWidth: 1),
-                                     alignment: .top)
+                              .font(.body)
+                              .foregroundStyle(ConstantColors.black)
+                              .frame( maxHeight: .infinity)
+                        }.frame(maxWidth: .infinity)
+                            .background(ConstantColors.greyBackground)
                         
-                    }.background(ConstantColors.blueTint)
-                        .cornerRadius(9)
-                        .overlay( RoundedRectangle(
-                            cornerRadius: 6)
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
+                    }.frame(width: 45,height: 45)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+
                     
                 }
-                Divider().background(ConstantColors.greyBackground)
+
+                Divider().frame(maxHeight: 60)
                 
                 Text(borrower.name)
-                    .font(.subheadline)
-                    .fontWeight(.bold)
+                    .font(.headline)
                     .foregroundStyle(ConstantColors.black)
-                
-            }
-            Spacer()
+
+            }.frame(maxWidth: .infinity,alignment: .leading)
             
             HStack(spacing: 12){
                 VStack(alignment: .trailing){
@@ -60,10 +57,9 @@ struct HomeBorrowerCard:View {
                         .font(.caption2)
                         .foregroundColor(ConstantColors.greyTextShade)
                     
-                    Text(borrower.totalDebtAmount, format: .currency(code: "IDR"))
-                        .font(.body)
-                        .fontWeight(.bold)
-                        .foregroundColor(ConstantColors.primary)
+                    Text(borrower.totalDebtAmount, format: .currency(code: "IDR"))                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.blueShade)
                     
                 }
                 Image(systemName: "chevron.right")
@@ -71,15 +67,18 @@ struct HomeBorrowerCard:View {
                     .foregroundColor(ConstantColors.grey)
                 
             }
-
-        }.padding(16)
-            .background(.white)
-            .cornerRadius(12)
+        }
+            .frame(height:80)
+            .padding(.vertical,8)
+            .padding(.horizontal, 16)
+            .background(ConstantColors.white)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
             .shadow(color: Color.black.opacity(0.1),
                     radius: 1, x: 0, y: 1)
+
     }
 }
- 
+
 #Preview {
-    HomeBorrowerCard(borrower: Borrower(name: "String", nextDueDate: Date(), debts: []))
+    HomeBorrowerCard2(borrower: Borrower(name: "String", nextDueDate: Date(), debts: []))
 }
