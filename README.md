@@ -1,5 +1,5 @@
 # FreeUtang
-FreeUtang is a simple receivables tracking application built in iOS, designed to help users to record their receivables, due date, and calculate remaining amount of debts if they pay with installments.
+FreeUtang is a simple receivables tracking application built in iOS using SwiftUI and SwiftData, designed to help users to record their receivables, due date, and calculate remaining amount of debts if they pay with installments.
 
 ## Features
 * Record Debt
